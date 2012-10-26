@@ -1,0 +1,33 @@
+CVars is a small C++ library that allows run-time tweaking of C++ variables.
+
+GLConsole is a header written C++ designed to allow developers to easily add a
+'Quake-style' debugging console to their applications.  GLConsole relies on CVars.
+
+A short list of features:
+
+- Any variable in your code can easily be exposed for tweaking from the console.
+- New object types to be easily exposed in the console (just overload << and >>)
+- Full and partial tab completion with suggestions and commmand history
+- Scrolling with shift+up/shift+down and page-up/page-down.
+- Printf style logging functions to send any error or status messages to the
+  console
+- Custom console functions that take an arbitrary number of parameters allow
+  the console to perform arbitrary tasks
+
+After building and installing CVars, you can use it by linking against
+libcvars.
+
+To use the GLUT interface, just include <GLConsole/GLConsole.h>.   See the demo
+in the Example directory to see how use GLConsole with GLUT.
+
+To use the FLTK interface, just include <FLConsole/FLConsole.h>.   See the demo
+in the Example directory to see how use FLConsole with FLTK.
+
+
+-------------------------------------------------------------------------------
+GLConsole is released under the LGPL. Please see the file LICENSE included with
+this release for details.
+
+Copyright 2010 Gabe Sibley
+Copyright 2004 Michael Mandel
+

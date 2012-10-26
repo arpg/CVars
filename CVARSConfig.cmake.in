@@ -1,0 +1,7 @@
+SET( CVARS_LIBRARIES  @CVARS_LIBRARY@ CACHE PATH "CVars libraries" )
+SET( CVARS_INCLUDE_DIR  @CMAKE_CURRENT_SOURCE_DIR@ CACHE PATH "CVars include directory" )
+
+mark_as_advanced( CVARS_DIR )
+mark_as_advanced( CVARS_LIBRARIES )
+mark_as_advanced( CVARS_INCLUDE_DIR )
+
