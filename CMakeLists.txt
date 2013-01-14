@@ -8,11 +8,8 @@ SET( PATCH_VERSION 0 )
 
 cmake_minimum_required( VERSION 2.8 )
 
-###############################################################################
-# tmp hack until CMake is fixed on SnowLeopard...
-IF( APPLE AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    SET( CMAKE_OSX_ARCHITECTURES "i386;x86_64" )
-ENDIF( APPLE AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 ###############################################################################
 # Setup strict debugging environment.
