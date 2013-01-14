@@ -70,15 +70,13 @@ namespace CVarUtils
 	template <typename T> std::ostream& operator<<(std::ostream &out, const CVarRef<T> &v) { out << *v.var; return out; }
 	template <typename T> std::istream& operator>>(std::istream &in, CVarRef<T> &v)        { in >> *v.var;  return in;  }
 
-    inline std::ostream &operator<<(std::ostream &stream, ConsoleFunc &ob)
+    inline std::ostream &operator<<(std::ostream &stream, ConsoleFunc &)
     { 
-        ob = ob;
         return stream;  
     }
 
-    inline std::istream &operator>>(std::istream &stream, ConsoleFunc &ob)
+    inline std::istream &operator>>(std::istream &stream, ConsoleFunc &)
     {
-        ob = ob;
         return stream;  
     }
 
