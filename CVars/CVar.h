@@ -262,6 +262,13 @@ namespace CVarUtils
  //    void PrintAllCVars();
 
     ////////////////////////////////////////////////////////////////////////////////
+    /// Changes the input/output types when calling Save and Load, options:
+    /// - CVARS_XML_STREAM is the default
+    /// - TXT_XML_STREAM is another option where the format is 'cvar_name = cvar_value' per line
+    /// with commented lines starting by '#' or '//'
+    inline void SetStreamType( const CVARS_STREAM_TYPE& stream_type );
+
+    ////////////////////////////////////////////////////////////////////////////////
     /** This function saves the CVars to "sFileName", it takes an optional
      *  argument that is a vector of substrings indicating the CVars that should
      *  or should not be saved.
@@ -272,6 +279,7 @@ namespace CVarUtils
      */
     inline bool Save( const std::string& sFileName, 
                       std::vector<std::string> vFilterSubstrings=std::vector<std::string>() );
+
     ////////////////////////////////////////////////////////////////////////////////
     /** This function loads the CVars from "sFileName", it takes an optional
      *  argument that is a vector of substrings indicating the CVars that should
@@ -637,6 +645,12 @@ namespace CVarUtils {
                 printf( "%s", sRowEndTag );
             }
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    inline void SetStreamType( const CVARS_STREAM_TYPE& stream_type )
+    {
+        g_pCVarTrie->SetStreamType( stream_type );
     }
 
     ////////////////////////////////////////////////////////////////////////////////

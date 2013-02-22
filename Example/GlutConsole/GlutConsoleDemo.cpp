@@ -113,6 +113,14 @@ int main (int argc, const char * argv[])
   CVarUtils::SetCVar<int>( "testVar", 300 );
   cout << "nTest: " << nTest << endl;
 
+  // How to save to text
+  CVarUtils::SetStreamType( CVARS_TXT_STREAM );
+  const string sOutputFile = "my_cvars.txt";
+  cout << "Saving cvars in text format to: " << sOutputFile << endl;
+  CVarUtils::Save( "my_cvars.txt" );
+
+  CVarUtils::Load( "my_cvars2.txt" );
+
   //CVars have exception handling
   try {
     cout << "Nonexistant: " << CVarUtils::GetCVar<int>( "nonExistant" );
