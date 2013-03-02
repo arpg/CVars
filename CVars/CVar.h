@@ -96,7 +96,7 @@ namespace CVarUtils
                ) {
             r = tr/255.0f; g = tg/255.0f; b = tb/255.0f; a = ta/255.0f;
         }
-        float fColor[0];
+        //float fColor[0];
         struct { float r; float g; float b; float a; };
     };
     

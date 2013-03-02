@@ -279,6 +279,7 @@ static std::ostream &TrieToTXT( std::ostream &stream, Trie &rTrie )
             stream << sCVarName << " = " << sVal << std::endl;
         }
     }
+	return stream;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
