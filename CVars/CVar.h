@@ -732,6 +732,11 @@ namespace CVarUtils {
     bool IsConsoleFunc( 
             TrieNode *node  //< Input:
             );
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    bool IsConsoleFunc(
+            const std::string sCmd      //< Input
+            );
 
     ////////////////////////////////////////////////////////////////////////////////
     /// If 'sCommand' is

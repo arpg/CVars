@@ -1518,6 +1518,15 @@ inline void GLConsole::_TabComplete()
 {
     TrieNode* node = g_pCVarTrie->FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
     if( !node ) {
+        // Attempt to strip away '=' so that the value can be re-completed
+        const size_t nEquals = m_sCurrentCommandBeg.rfind( "=" );
+        if(nEquals != m_sCurrentCommandBeg.npos) {
+            std::string sCommandStripEq = m_sCurrentCommandBeg.substr( 0, nEquals );
+            node = g_pCVarTrie->FindSubStr( RemoveSpaces( sCommandStripEq ) );
+            if( node != NULL ) { m_sCurrentCommandBeg = sCommandStripEq; }
+        }
+    }
+    if( !node ) {
         return;
     }
     else if( node->m_nNodeType == TRIE_LEAF || (node->m_children.size() == 0) ) {
