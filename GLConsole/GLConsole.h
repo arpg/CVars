@@ -1309,6 +1309,9 @@ inline void GLConsole::KeyboardFunc( unsigned char key)
                 case ('e' - 96):
                     CursorToEndOfLine();
                     break;
+                case('c' - 96):
+                    ClearCurrentCommand();
+                    break;
                 default:
                     break;
             }
