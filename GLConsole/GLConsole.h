@@ -1243,11 +1243,33 @@ inline void GLConsole::SpecialFunc( int key )
             break;
 
         case GLUT_ACTIVE_CTRL:
-
+            switch (key) {
+                case GLUT_KEY_LEFT:
+                    CursorToBeginningOfLine();
+                    break;
+                case GLUT_KEY_RIGHT:
+                    CursorToEndOfLine();
+                    break;
+            }
             break;
 
         case GLUT_ACTIVE_ALT:
-
+            switch (key) {
+                case GLUT_KEY_LEFT:
+                    // Remove a level from tab-completion
+                    const size_t nPosEqual = m_sCurrentCommandBeg.rfind('=');
+                    if(nPosEqual != m_sCurrentCommandBeg.npos) {
+                        m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosEqual);
+                    }else{
+                        const size_t nPosDot = m_sCurrentCommandBeg.rfind('.');
+                        if(nPosDot != m_sCurrentCommandBeg.npos) {
+                            m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosDot);
+                        }else{
+                            m_sCurrentCommandBeg = "";
+                        }
+                    }
+                    break;
+            }
             break;
 
         default:
