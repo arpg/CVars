@@ -69,7 +69,7 @@ int main (int argc, const char * argv[])
 
   // standard GL init
   glShadeModel(GL_SMOOTH);
-  glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+  glClearColor(0.0f, 0.0f, 1.0f, 0.5f);
   glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
