@@ -96,7 +96,7 @@ namespace CVarUtils
                ) {
             r = tr/255.0f; g = tg/255.0f; b = tb/255.0f; a = ta/255.0f;
         }
-        float fColor[0];
+        //float fColor[0];
         struct { float r; float g; float b; float a; };
     };
     
@@ -190,6 +190,14 @@ namespace CVarUtils
             std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL 
             );
 
+    template <class T> T& CreateGetUnsavedCVar(
+            const std::string& s,
+            T val,
+            const std::string& sHelp = "No help available",
+            std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ) = NULL,
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL
+            );
+
     ////////////////////////////////////////////////////////////////////////////////
     /** These functions must be called to attach a CVar to a variable.
      *  Use these functions if you do not want to use references to CVars (as
@@ -262,6 +270,13 @@ namespace CVarUtils
  //    void PrintAllCVars();
 
     ////////////////////////////////////////////////////////////////////////////////
+    /// Changes the input/output types when calling Save and Load, options:
+    /// - CVARS_XML_STREAM is the default
+    /// - TXT_XML_STREAM is another option where the format is 'cvar_name = cvar_value' per line
+    /// with commented lines starting by '#' or '//'
+    inline void SetStreamType( const CVARS_STREAM_TYPE& stream_type );
+
+    ////////////////////////////////////////////////////////////////////////////////
     /** This function saves the CVars to "sFileName", it takes an optional
      *  argument that is a vector of substrings indicating the CVars that should
      *  or should not be saved.
@@ -272,6 +287,7 @@ namespace CVarUtils
      */
     inline bool Save( const std::string& sFileName, 
                       std::vector<std::string> vFilterSubstrings=std::vector<std::string>() );
+
     ////////////////////////////////////////////////////////////////////////////////
     /** This function loads the CVars from "sFileName", it takes an optional
      *  argument that is a vector of substrings indicating the CVars that should
@@ -469,6 +485,30 @@ namespace CVarUtils {
     }
 
     ////////////////////////////////////////////////////////////////////////////////
+    template <class T> T& CreateGetUnsavedCVar(
+            const std::string& s,
+            T val,
+            const std::string& sHelp,
+            std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ),
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T )
+            )
+    {
+        try {
+            return CreateUnsavedCVar( s, val, sHelp, pSerialisationFuncPtr, pDeserialisationFuncPtr );
+        }
+        catch( CVarUtils::CVarException e  ){
+            switch( e ) {
+            case CVarUtils::CVarAlreadyCreated:
+                break;
+            default:
+                throw e;
+                break;
+            }
+        }
+        return CVarUtils::GetCVarRef<T>( s );
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
     template <class T> T& CreateUnsavedCVar(
             const std::string& s, 
             T val,
@@ -640,6 +680,12 @@ namespace CVarUtils {
     }
 
     ////////////////////////////////////////////////////////////////////////////////
+    inline void SetStreamType( const CVARS_STREAM_TYPE& stream_type )
+    {
+        g_pCVarTrie->SetStreamType( stream_type );
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
     inline bool Save( const std::string& sFileName, std::vector<std::string> vAcceptedSubstrings ) {
         std::ofstream sOut( sFileName.c_str() );
         if( sOut.is_open() ) {
@@ -717,6 +763,11 @@ namespace CVarUtils {
     ////////////////////////////////////////////////////////////////////////////////
     bool IsConsoleFunc( 
             TrieNode *node  //< Input:
+            );
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    bool IsConsoleFunc(
+            const std::string sCmd      //< Input
             );
 
     ////////////////////////////////////////////////////////////////////////////////

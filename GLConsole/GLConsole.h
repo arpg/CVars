@@ -1243,11 +1243,33 @@ inline void GLConsole::SpecialFunc( int key )
             break;
 
         case GLUT_ACTIVE_CTRL:
-
+            switch (key) {
+                case GLUT_KEY_LEFT:
+                    CursorToBeginningOfLine();
+                    break;
+                case GLUT_KEY_RIGHT:
+                    CursorToEndOfLine();
+                    break;
+            }
             break;
 
         case GLUT_ACTIVE_ALT:
-
+            switch (key) {
+                case GLUT_KEY_LEFT:
+                    // Remove a level from tab-completion
+                    const size_t nPosEqual = m_sCurrentCommandBeg.rfind('=');
+                    if(nPosEqual != m_sCurrentCommandBeg.npos) {
+                        m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosEqual);
+                    }else{
+                        const size_t nPosDot = m_sCurrentCommandBeg.rfind('.');
+                        if(nPosDot != m_sCurrentCommandBeg.npos) {
+                            m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosDot);
+                        }else{
+                            m_sCurrentCommandBeg = "";
+                        }
+                    }
+                    break;
+            }
             break;
 
         default:
@@ -1308,6 +1330,9 @@ inline void GLConsole::KeyboardFunc( unsigned char key)
                     break;
                 case ('e' - 96):
                     CursorToEndOfLine();
+                    break;
+                case('c' - 96):
+                    ClearCurrentCommand();
                     break;
                 default:
                     break;
@@ -1517,6 +1542,15 @@ void GLConsole::PrintAllCVars()
 inline void GLConsole::_TabComplete()
 {
     TrieNode* node = g_pCVarTrie->FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
+    if( !node ) {
+        // Attempt to strip away '=' so that the value can be re-completed
+        const size_t nEquals = m_sCurrentCommandBeg.rfind( "=" );
+        if(nEquals != m_sCurrentCommandBeg.npos) {
+            std::string sCommandStripEq = m_sCurrentCommandBeg.substr( 0, nEquals );
+            node = g_pCVarTrie->FindSubStr( RemoveSpaces( sCommandStripEq ) );
+            if( node != NULL ) { m_sCurrentCommandBeg = sCommandStripEq; }
+        }
+    }
     if( !node ) {
         return;
     }

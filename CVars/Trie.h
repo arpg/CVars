@@ -74,6 +74,12 @@ namespace CVarUtils {
     };
 }
 
+enum CVARS_STREAM_TYPE
+  {
+    CVARS_XML_STREAM,
+    CVARS_TXT_STREAM
+  };
+
 class Trie
 {
  public:
@@ -103,6 +109,9 @@ class Trie
     // traverse from the supplied node and return a list of all nodes
     std::vector<TrieNode*>   CollectAllNodes( TrieNode* node );
 
+    CVARS_STREAM_TYPE GetStreamType() { return m_StreamType; }
+    void SetStreamType( const CVARS_STREAM_TYPE& streamType ) { m_StreamType = streamType; }
+
     // CVar
     int*   m_pVerboseCVarNamePaddingWidth;
 
@@ -115,7 +124,7 @@ class Trie
     std::vector< std::string > m_vNotAcceptedSubstrings;
     std::vector< std::string > m_vCVarNames; // Keep a list of CVar names
     bool m_bVerbose;
-    
+    CVARS_STREAM_TYPE m_StreamType;
 };
 
 std::ostream &operator<<(std::ostream &stream, Trie &rTrie );

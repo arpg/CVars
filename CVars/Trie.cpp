@@ -21,12 +21,9 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-Trie::Trie()
+Trie::Trie() : root( NULL ), m_bVerbose( false ), m_StreamType( CVARS_XML_STREAM )
 { 
-    root = NULL;
-    m_bVerbose = false;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 void Trie::Init()
@@ -222,6 +219,7 @@ bool Trie::IsNameAcceptable( const std::string& sVarName )
     }
     return bAcceptable;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 bool Trie::IsVerbose()
 {
@@ -254,9 +252,40 @@ std::vector<TrieNode*> Trie::CollectAllNodes( TrieNode* node )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::ostream &operator<<( std::ostream &stream, Trie &rTrie )
+static std::ostream &TrieToTXT( std::ostream &stream, Trie &rTrie )
 {
-	std::vector<TrieNode*> vNodes = rTrie.CollectAllNodes( rTrie.GetRoot() );
+    std::vector<TrieNode*> vNodes = rTrie.CollectAllNodes( rTrie.GetRoot() );
+    for( size_t ii = 0; ii < vNodes.size(); ii++ ){
+        std::string sVal = ((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->GetValueAsString();
+
+        if( !sVal.empty() ) {       
+            std::string sCVarName = ((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->m_sVarName;
+            if( !rTrie.IsNameAcceptable( sCVarName ) ) {
+                if( rTrie.IsVerbose() ) {
+                    printf( "NOT saving %s (not in acceptable name list).\n", sCVarName.c_str() );
+                }
+                continue;
+            }   
+            if( !((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->m_bSerialise ) {
+                if( rTrie.IsVerbose() ) {
+                    printf( "NOT saving %s (set as not savable at construction time).\n", sCVarName.c_str() );
+                }
+                continue;
+            }   
+            if( rTrie.IsVerbose() ) {
+                printf( "Saving \"%-*s\" with value \"%s\".\n", *rTrie.m_pVerboseCVarNamePaddingWidth, 
+                        sCVarName.c_str(), sVal.c_str() );
+            }
+            stream << sCVarName << " = " << sVal << std::endl;
+        }
+    }
+	return stream;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static std::ostream &TrieToXML( std::ostream &stream, Trie &rTrie )
+{
+    std::vector<TrieNode*> vNodes = rTrie.CollectAllNodes( rTrie.GetRoot() );
     stream << CVarUtils::CVarSpc() << "<cvars>" << std::endl;
     for( size_t ii = 0; ii < vNodes.size(); ii++ ){
         std::string sVal = ((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->GetValueAsString();
@@ -294,7 +323,23 @@ std::ostream &operator<<( std::ostream &stream, Trie &rTrie )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::istream &operator>>( std::istream &stream, Trie &rTrie )
+std::ostream &operator<<( std::ostream &stream, Trie &rTrie )
+{
+  switch( rTrie.GetStreamType() ) {
+  case CVARS_XML_STREAM:
+    return TrieToXML( stream, rTrie );
+    break;
+  case CVARS_TXT_STREAM:
+    return TrieToTXT( stream, rTrie );
+    break;
+  default:
+    std::cerr << "ERROR: unknown stream type" << std::endl;
+    }
+  return stream;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
 {
     CVarUtils::TiXmlDocument doc;
     stream >> doc;
@@ -344,3 +389,101 @@ std::istream &operator>>( std::istream &stream, Trie &rTrie )
     }
     return stream;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+static std::string remove_spaces( std::string str ) 
+{
+  str.erase( str.find_last_not_of( ' ' ) + 1 );
+  str.erase( 0, str.find_first_not_of( ' ' ) );
+  return str;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static bool get_not_comment_line( std::istream& iStream, std::string& sLineNoComment )
+{
+  std::string sLine;
+  if( !iStream.good() ) { return false; }
+  while( !iStream.eof() ) {
+    getline( iStream, sLine );
+    sLine.erase( 0, sLine.find_first_not_of( ' ' ) );
+    if( sLine.empty() ) {
+      continue;
+    }
+    else if( sLine[0] != '#' && sLine[0] != '/' ) {
+      sLineNoComment = sLine;
+      return true;
+    }
+  }
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static bool get_name_val( const std::string& sLine, 
+			  std::string& sName,
+			  std::string& sVal ) 
+{
+  size_t sEq = sLine.find( "=" );
+  if( sEq == std::string::npos || sEq == sLine.length()-1 ) { return false; }
+  sVal = sLine;
+  sVal.erase( 0, sEq+1 );
+  sVal = remove_spaces( sVal );
+  sName = sLine;
+  sName.erase( sEq );
+  sName = remove_spaces( sName );
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static std::istream &TXTToTrie( std::istream &stream, Trie &rTrie )
+{
+  std::string sLine, sCVarName, sCVarValue;
+  while( get_not_comment_line( stream, sLine ) ) 
+    {
+      if( get_name_val( sLine, sCVarName, sCVarValue ) ) 
+	{
+	  if( !rTrie.Exists( sCVarName ) ) {
+            if( rTrie.IsVerbose() ) {
+	      printf( "NOT loading %s (not in Trie).\n", sCVarName.c_str() );
+            }
+            continue;
+	  }
+	  if( !rTrie.IsNameAcceptable( sCVarName ) ) {
+            if( rTrie.IsVerbose() ) {
+	      printf( "NOT loading %s (not in acceptable name list).\n", sCVarName.c_str() );
+            }
+            continue;
+	  }
+
+	  CVarUtils::CVar<int>* pCVar = (CVarUtils::CVar<int>*)rTrie.Find( sCVarName )->m_pNodeData;
+
+	  if( pCVar != NULL ) {
+            pCVar->SetValueFromString( sCVarValue );
+            if( rTrie.IsVerbose() ) {
+	      printf( "Loading \"%-*s\" with value \"%s... \".\n", *rTrie.m_pVerboseCVarNamePaddingWidth,
+		      sCVarName.c_str(), sCVarValue.substr(0,40).c_str() );
+            }
+	  }
+	  else {
+            cerr << "WARNING: found a cvar in file with no value (name: " << sCVarName << ").\n" << endl;
+	  }
+	}
+    }
+    return stream;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::istream &operator>>( std::istream &stream, Trie &rTrie )
+{
+  switch( rTrie.GetStreamType() ) {
+  case CVARS_XML_STREAM:
+    return XMLToTrie( stream, rTrie );
+    break;
+  case CVARS_TXT_STREAM:
+    return TXTToTrie( stream, rTrie );
+    break;
+  default:
+    std::cerr << "ERROR: unknown stream type" << std::endl;
+    }
+  return stream;
+}
+
