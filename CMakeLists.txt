@@ -51,10 +51,28 @@ INSTALL( FILES ${FLCONSOLE_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
 
 
 ##############################################################################
-# Create the CVarsConfig.cmake file for other cmake projects.
+# Figure out the relative path from the installed Config.cmake file to the
+# install prefix. This relative path will be configured into CVARSConfig.cmake.
+SET( CMAKECONFIG_INSTALL_DIR lib/cmake/CVARS )
+FILE( RELATIVE_PATH REL_INCLUDE_DIR
+    "${CMAKE_INSTALL_PREFIX}/${CMAKECONFIG_INSTALL_DIR}"
+    "${CMAKE_INSTALL_PREFIX}/include" )
+
+# Add package to CMake package registery for use from the build tree
+EXPORT( TARGETS cvars FILE "${CMAKE_CURRENT_BINARY_DIR}/CVarsTargets.cmake" )
+EXPORT( PACKAGE CVARS )
+# Install the export set for use with the install tree
+INSTALL( EXPORT CVarsTargets DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+
+# Create the CVARSConfig.cmake file for other cmake projects: FIND_PACKAGE( CVARS )
+# ... for the build tree
+SET( CONF_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/CVARSConfig.cmake.in
-               ${CMAKE_CURRENT_BINARY_DIR}/CVARSConfig.cmake @ONLY IMMEDIATE )
+                ${CMAKE_CURRENT_BINARY_DIR}/CVARSConfig.cmake @ONLY )
+# ... for the install tree
+SET( CONF_INCLUDE_DIR "\${CVARS_CMAKE_DIR}/${REL_INCLUDE_DIR}" )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/CVARSConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CVARSConfig.cmake @ONLY )
 
-# Add package to CMake package registery so external projects can Find CVARS automatically.
-export( PACKAGE CVARS )
-
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CVARSConfig.cmake"
+        DESTINATION ${CMAKECONFIG_INSTALL_DIR} )
