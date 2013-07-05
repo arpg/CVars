@@ -959,10 +959,10 @@ inline void GLConsole::RenderConsole()
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
-        glTranslated(0,0,0);
 
         //set up a scissor region to draw the console in
-        glScissor(1, m_Viewport.height - _GetConsoleHeight(), //bottom coord
+        GLfloat bottom = m_Viewport.height - _GetConsoleHeight();
+        glScissor(0, bottom, //bottom coord
                 m_Viewport.width, //width
                 m_Viewport.height); //top coord
         glEnable(GL_SCISSOR_TEST);
@@ -970,21 +970,21 @@ inline void GLConsole::RenderConsole()
         //render transparent background
         glDisable(GL_DEPTH_TEST); //for transparency
         glEnable(GL_BLEND);
-        glBegin(GL_QUADS);
-        {
-            glColor4f( m_consoleColor.r,
-                    m_consoleColor.g, 
-                    m_consoleColor.b,
-                    m_consoleColor.a );
+        glColor4f( m_consoleColor.r,
+                m_consoleColor.g, 
+                m_consoleColor.b,
+                m_consoleColor.a );
+        
+        glNormal3f( 0.0f, 0.0f, 1.0f );
+        GLfloat verts[] = { 0.0f, bottom, 
+                            (GLfloat)m_Viewport.width, bottom,
+                            (GLfloat)m_Viewport.width, (GLfloat)m_Viewport.height,
+                            0.0f, (GLfloat)m_Viewport.height };
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, verts);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        glDisableClientState(GL_VERTEX_ARRAY);            
 
-            glNormal3f( 0.0f, 0.0f, 1.0f );
-            //just draw a full screen quad (it will be clipped by the scissor region)
-            glVertex2f(0, 0); 
-            glVertex2f(0, m_Viewport.height-1); 
-            glVertex2f( m_Viewport.width-1, m_Viewport.height-1 ); 
-            glVertex2f( m_Viewport.width-1, 0);
-        }
-        glEnd();
         //draw text
         _RenderText();
 
