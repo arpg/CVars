@@ -331,18 +331,22 @@ class GLConsole
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
 #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-#    include <OpenGL/gl.h>
-#    include <OpenGL/glu.h>
-#    include <GLUT/glut.h>
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glu.h>
+#  include <GLUT/glut.h>
 #else
+#  ifdef _ANDROID_
+#    include <EGL/egl.h>
+#    include <GLES/gl.h>
+#  else
 #    ifdef WIN32
 #      include <windows.h>
 #    endif
 #    include <GL/gl.h>
 #    include <GL/glu.h> 
 #    include <GL/glut.h>
+#  endif
 #endif
 
 #include <algorithm>
