@@ -993,9 +993,11 @@ inline void GLConsole::RenderConsole()
         _RenderText();
 
         //restore old matrices and properties...	
+        glMatrixMode(GL_PROJECTION);
         glPopMatrix();										
-        glMatrixMode(GL_PROJECTION);						
+        glMatrixMode(GL_MODELVIEW);						
         glPopMatrix();
+        
         glPopAttrib();
     }
 }
