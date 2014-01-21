@@ -8,7 +8,7 @@ SET( VERSION_PATCH 0 )
 SET( VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH} )
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
 
 ###############################################################################
 # Setup strict debugging environment.
