@@ -10,9 +10,9 @@
 
 // Trie data structure implementation.
 
-#include "CVars/CVar.h" 
-#include "CVars/Trie.h" 
-#include "CVars/TrieNode.h" 
+#include "CVars/CVar.h"
+#include "CVars/Trie.h"
+#include "CVars/TrieNode.h"
 #include "CVars/cvars_tinyxml.h"
 #include <iostream>
 #include <sstream>
@@ -22,13 +22,13 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 Trie::Trie() : root( NULL ), m_bVerbose( false ), m_StreamType( CVARS_XML_STREAM )
-{ 
+{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Trie::Init()
 {
-    root = new TrieNode( TRIE_ROOT ); 
+    root = new TrieNode( TRIE_ROOT );
 
     std::string sVarName;
 
@@ -53,9 +53,7 @@ void Trie::Init()
 ////////////////////////////////////////////////////////////////////////////////
 Trie::~Trie()
 {
-    if ( root != NULL ) {
-        delete root; //destructor on TrieNodes will destroy all the children	
-    }
+  delete root;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,10 +78,10 @@ void Trie::Insert( std::string s, void *dataPtr )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode* Trie::Find( const std::string& s ) 
-{ 
+TrieNode* Trie::Find( const std::string& s )
+{
     TrieNode* node = FindSubStr( s );
-    if(	node != NULL 
+    if(	node != NULL
         && node->m_nNodeType == TRIE_LEAF ) {
         return node;
     }
@@ -91,8 +89,8 @@ TrieNode* Trie::Find( const std::string& s )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void* Trie::FindData( const std::string& s ) 
-{ 
+void* Trie::FindData( const std::string& s )
+{
     return Find( s )->m_pNodeData;
 }
 
@@ -103,8 +101,8 @@ bool Trie::Exists( const std::string& s )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode* Trie::GetRoot() { 
-    return root; 
+TrieNode* Trie::GetRoot() {
+    return root;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +173,7 @@ void Trie::SetAcceptedSubstrings( std::vector< std::string > vFilterSubstrings )
             vFilterSubstrings.pop_back();
         }
     }
-    
+
     // Split the list between acceptable and not acceptable substrings.
     int nAccIndex = 0;
     for( nAccIndex=0; nAccIndex<int(vFilterSubstrings.size()); nAccIndex++ ) {
@@ -239,7 +237,7 @@ std::vector<std::string> Trie::CollectAllNames( TrieNode* node )
     std::vector<std::string> res;
     node->PrintToVector( res );
 
-    return res;	
+    return res;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +246,7 @@ std::vector<TrieNode*> Trie::CollectAllNodes( TrieNode* node )
 {
     std::vector<TrieNode*> res;
     node->PrintNodeToVector( res );
-    return res;	
+    return res;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,22 +256,22 @@ static std::ostream &TrieToTXT( std::ostream &stream, Trie &rTrie )
     for( size_t ii = 0; ii < vNodes.size(); ii++ ){
         std::string sVal = ((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->GetValueAsString();
 
-        if( !sVal.empty() ) {       
+        if( !sVal.empty() ) {
             std::string sCVarName = ((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->m_sVarName;
             if( !rTrie.IsNameAcceptable( sCVarName ) ) {
                 if( rTrie.IsVerbose() ) {
                     printf( "NOT saving %s (not in acceptable name list).\n", sCVarName.c_str() );
                 }
                 continue;
-            }   
+            }
             if( !((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->m_bSerialise ) {
                 if( rTrie.IsVerbose() ) {
                     printf( "NOT saving %s (set as not savable at construction time).\n", sCVarName.c_str() );
                 }
                 continue;
-            }   
+            }
             if( rTrie.IsVerbose() ) {
-                printf( "Saving \"%-*s\" with value \"%s\".\n", *rTrie.m_pVerboseCVarNamePaddingWidth, 
+                printf( "Saving \"%-*s\" with value \"%s\".\n", *rTrie.m_pVerboseCVarNamePaddingWidth,
                         sCVarName.c_str(), sVal.c_str() );
             }
             stream << sCVarName << " = " << sVal << std::endl;
@@ -290,22 +288,22 @@ static std::ostream &TrieToXML( std::ostream &stream, Trie &rTrie )
     for( size_t ii = 0; ii < vNodes.size(); ii++ ){
         std::string sVal = ((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->GetValueAsString();
 
-        if( !sVal.empty() ) {       
+        if( !sVal.empty() ) {
             std::string sCVarName = ((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->m_sVarName;
             if( !rTrie.IsNameAcceptable( sCVarName ) ) {
                 if( rTrie.IsVerbose() ) {
                     printf( "NOT saving %s (not in acceptable name list).\n", sCVarName.c_str() );
                 }
                 continue;
-            }   
+            }
             if( !((CVarUtils::CVar<int>*)vNodes[ii]->m_pNodeData)->m_bSerialise ) {
                 if( rTrie.IsVerbose() ) {
                     printf( "NOT saving %s (set as not savable at construction time).\n", sCVarName.c_str() );
                 }
                 continue;
-            }   
+            }
             if( rTrie.IsVerbose() ) {
-                printf( "Saving \"%-*s\" with value \"%s\".\n", *rTrie.m_pVerboseCVarNamePaddingWidth, 
+                printf( "Saving \"%-*s\" with value \"%s\".\n", *rTrie.m_pVerboseCVarNamePaddingWidth,
                         sCVarName.c_str(), sVal.c_str() );
             }
             CVarUtils::CVarIndent();
@@ -355,7 +353,7 @@ static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
          pNode != NULL;
          pNode = pNode->NextSibling() ) {
         std::string sCVarName( pNode->Value() );
-        
+
         if( !rTrie.Exists( sCVarName ) ) {
             if( rTrie.IsVerbose() ) {
                 printf( "NOT loading %s (not in Trie).\n", sCVarName.c_str() );
@@ -391,7 +389,7 @@ static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string remove_spaces( std::string str ) 
+static std::string remove_spaces( std::string str )
 {
   str.erase( str.find_last_not_of( ' ' ) + 1 );
   str.erase( 0, str.find_first_not_of( ' ' ) );
@@ -418,9 +416,9 @@ static bool get_not_comment_line( std::istream& iStream, std::string& sLineNoCom
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool get_name_val( const std::string& sLine, 
+static bool get_name_val( const std::string& sLine,
 			  std::string& sName,
-			  std::string& sVal ) 
+			  std::string& sVal )
 {
   size_t sEq = sLine.find( "=" );
   if( sEq == std::string::npos || sEq == sLine.length()-1 ) { return false; }
@@ -437,9 +435,9 @@ static bool get_name_val( const std::string& sLine,
 static std::istream &TXTToTrie( std::istream &stream, Trie &rTrie )
 {
   std::string sLine, sCVarName, sCVarValue;
-  while( get_not_comment_line( stream, sLine ) ) 
+  while( get_not_comment_line( stream, sLine ) )
     {
-      if( get_name_val( sLine, sCVarName, sCVarValue ) ) 
+      if( get_name_val( sLine, sCVarName, sCVarValue ) )
 	{
 	  if( !rTrie.Exists( sCVarName ) ) {
             if( rTrie.IsVerbose() ) {
@@ -486,4 +484,3 @@ std::istream &operator>>( std::istream &stream, Trie &rTrie )
     }
   return stream;
 }
-

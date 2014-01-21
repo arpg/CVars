@@ -8,34 +8,39 @@
  */
 
 
-#include "CVars/TrieNode.h" 
+#include "CVars/TrieNode.h"
 #include "CVars/CVar.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode() { 
+TrieNode::TrieNode() : m_pNodeData(nullptr),
+                       m_nNodeType(TRIE_LEAF),
+                       m_cNodeChar(0) {
     m_children.clear();
-    m_pNodeData = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode( TrieNodeType t ) : m_nNodeType(t) 
+TrieNode::TrieNode( TrieNodeType t ) : m_pNodeData(nullptr),
+                                       m_nNodeType(t),
+                                       m_cNodeChar(0)
 {
     m_children.clear();
-    m_pNodeData = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode( std::string s ) :  m_nNodeType(TRIE_LEAF), m_sLeafText(s) 
-{ 
+TrieNode::TrieNode( std::string s ) :  m_pNodeData(nullptr),
+                                       m_nNodeType(TRIE_LEAF),
+                                       m_sLeafText(s),
+                                       m_cNodeChar(0)
+{
     m_children.clear();
-    m_pNodeData = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode( char c ) : m_nNodeType(TRIE_NODE), m_cNodeChar(c) 
-{ 
+TrieNode::TrieNode( char c ) : m_pNodeData(nullptr),
+                               m_nNodeType(TRIE_NODE),
+                               m_cNodeChar(c)
+{
     m_children.clear();
-    m_pNodeData = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,11 +50,12 @@ TrieNode::~TrieNode()
     if( m_nNodeType == TRIE_LEAF &&
         m_pNodeData != NULL ) {
         //printf( "Destroying leaf node '%s'\n", m_sLeafText.c_str() );
-        CVarUtils::CVar<int>* pCVar = (CVarUtils::CVar<int>*) m_pNodeData;
+      CVarUtils::CVar<int>* pCVar =
+          static_cast<CVarUtils::CVar<int>*>(m_pNodeData);
         delete pCVar;
     }
     else {
-        for( it = m_children.begin() ; it != m_children.end() ; it++ ) {
+        for( it = m_children.begin() ; it != m_children.end() ; ++it ) {
             delete (*it); //destructor on TrieNodes will destroy all the children
         }
     }
@@ -61,7 +67,7 @@ TrieNode::~TrieNode()
 TrieNode* TrieNode::TraverseInsert( char addchar )
 {
     std::list<TrieNode*>::iterator it;
-    for( it = m_children.begin() ; it != m_children.end() ; it++ ) {
+    for( it = m_children.begin() ; it != m_children.end() ; ++it ) {
         //found child
         if( ((*it)->m_nNodeType == TRIE_NODE) && ((*it)->m_cNodeChar == addchar) ) {
             return (*it);
@@ -79,9 +85,9 @@ TrieNode* TrieNode::TraverseInsert( char addchar )
 TrieNode* TrieNode::TraverseFind( char addchar )
 {
     std::list<TrieNode*>::iterator it;
-    for( it = m_children.begin() ; it != m_children.end() ; it++ ) {
+    for( it = m_children.begin() ; it != m_children.end() ; ++it ) {
         //found child
-        if( ((*it)->m_nNodeType == TRIE_NODE) && 
+        if( ((*it)->m_nNodeType == TRIE_NODE) &&
             ((*it)->m_cNodeChar == addchar) ) {
             return (*it);
         }
@@ -97,7 +103,7 @@ void TrieNode::PrintToVector( std::vector<std::string> &vec )
         vec.push_back( m_sLeafText );
     } else {
         std::list<TrieNode*>::iterator it;
-        for( it = m_children.begin() ; it != m_children.end() ; it++ ) {
+        for( it = m_children.begin() ; it != m_children.end() ; ++it ) {
             (*it)->PrintToVector( vec );
         }
     }
@@ -111,10 +117,8 @@ void TrieNode::PrintNodeToVector( std::vector<TrieNode*> &vec )
         vec.push_back( this );
     } else {
         std::list<TrieNode*>::iterator it;
-        for( it = m_children.begin() ; it != m_children.end() ; it++ ) {
+        for( it = m_children.begin() ; it != m_children.end() ; ++it ) {
             (*it)->PrintNodeToVector( vec );
         }
     }
 }
-
-
