@@ -15,15 +15,15 @@
 // operators to fascilitate little code change They can also be Serialized and
 // Restored on app startup and shutdown
 // Example:
-//  "int height = 2;" 
-// would be written as 
+//  "int height = 2;"
+// would be written as
 //  "int& height = CVarUtils::CreateCVar( "height", 2);"
 // Saving can be done in the Console with:
 // save cvars.xml
 // or for verbose:
-// save cvars.xml true 
+// save cvars.xml true
 // or to save just the values starting by "cons" with verbose:
-// save cvars.xml cons true 
+// save cvars.xml cons true
 
 #ifndef CVAR_H__
 #define CVAR_H__
@@ -47,14 +47,14 @@
 // name.  He lives in Trie.cpp.
 //extern Trie CVarTrie;
 
-extern std::auto_ptr<Trie> g_pCVarTrie;
+extern std::unique_ptr<Trie> g_pCVarTrie;
 
 void InitCVars();
 
 // Console functions must have the following signature
 typedef bool (*ConsoleFunc)( std::vector<std::string> *args);
 
-namespace CVarUtils 
+namespace CVarUtils
 {
     ////////////////////////////////////////////////////////////////////////////////
 	template <typename T>
@@ -71,35 +71,35 @@ namespace CVarUtils
 	template <typename T> std::istream& operator>>(std::istream &in, CVarRef<T> &v)        { in >> *v.var;  return in;  }
 
     inline std::ostream &operator<<(std::ostream &stream, ConsoleFunc &)
-    { 
-        return stream;  
+    {
+        return stream;
     }
 
     inline std::istream &operator>>(std::istream &stream, ConsoleFunc &)
     {
-        return stream;  
+        return stream;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     /// Color class: useful in practice for most consoles
-    struct Color { 
+    struct Color {
         Color( float tr = 1.0f,
-               float tg = 1.0f, 
-               float tb = 1.0f, 
+               float tg = 1.0f,
+               float tb = 1.0f,
                float ta = 1.0f ) {
             r = tr; g = tg; b = tb; a = ta;
         }
         Color( int tr,
                int tg,
                int tb,
-               int ta = 255 
+               int ta = 255
                ) {
             r = tr/255.0f; g = tg/255.0f; b = tb/255.0f; a = ta/255.0f;
         }
         //float fColor[0];
         struct { float r; float g; float b; float a; };
     };
-    
+
     ////////////////////////////////////////////////////////////////////////////////
     /// All types you wish to use with CVars must overload << and >>.
     inline std::ostream &operator<<( std::ostream &stream, Color &color ) {
@@ -121,7 +121,7 @@ namespace CVarUtils
         color.r = (float)r/255.0f;
         color.g = (float)g/255.0f;
         color.b = (float)b/255.0f;
-        color.a = (float)a/255.0f; 
+        color.a = (float)a/255.0f;
         return stream;
     }
 
@@ -133,9 +133,9 @@ namespace CVarUtils
     template <class T>
         std::string CVarValueString( T *t )
         {
-            std::ostringstream oss; 
+            std::ostringstream oss;
             oss << *t;
-            return oss.str();       
+            return oss.str();
         }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -166,28 +166,28 @@ namespace CVarUtils
      *  from being saved.
      *  eg. int& nGUIWidth = CVarUtils::CreateCVar<int>( "gui.Width", 10 );
      */
-    template <class T> T& CreateCVar( 
-            const std::string& s, 
-            T val, 
+    template <class T> T& CreateCVar(
+            const std::string& s,
+            T val,
             std::string sHelp = "No help available",
             std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ) = NULL,
-            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL 
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL
             );
 
-    template <class T> T& CreateGetCVar( 
-            const std::string& s, 
-            T val, 
+    template <class T> T& CreateGetCVar(
+            const std::string& s,
+            T val,
             std::string sHelp = "No help available",
             std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ) = NULL,
-            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL 
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL
             );
 
-    template <class T> T& CreateUnsavedCVar( 
-            const std::string& s, 
-            T val, 
+    template <class T> T& CreateUnsavedCVar(
+            const std::string& s,
+            T val,
             const std::string& sHelp = "No help available",
             std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ) = NULL,
-            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL 
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL
             );
 
     template <class T> T& CreateGetUnsavedCVar(
@@ -219,7 +219,7 @@ namespace CVarUtils
      *  created CVar.
      *
      *  The exception "CVarUtils::CVarNonExistant" will be thrown if the value
-     *  does not exist.  
+     *  does not exist.
      *  eg. int& nGUIWidth = CVarUtils::GetCVarRef<int>( "gui.Width" );
      */
     template <class T> T& GetCVarRef( const char* s );
@@ -230,12 +230,12 @@ namespace CVarUtils
      *  created CVar.
      *
      *  The exception "CVarUtils::CVarNonExistant" will be thrown if the value
-     *  does not exist.  
+     *  does not exist.
      *  eg. int nGUIWidth = CVarUtils::GetCVar<int>( "gui.Width" );
      */
     template <class T> T GetCVar( const char* s );
     template <class T> T GetCVar( std::string s );
-    
+
     ////////////////////////////////////////////////////////////////////////////////
     /** This function can be called to determine if a particular CVar exists.
       */
@@ -246,7 +246,7 @@ namespace CVarUtils
      *  created CVar.
      *
      *  The exception "CVarUtils::CVarNonExistant" will be thrown if
-     *  the value does not exist.  
+     *  the value does not exist.
      *  eg. CVarUtils::SetCVar<int>( "gui.Width", 20 );
      */
     template <class T> void SetCVar( const char* s, T val );
@@ -257,7 +257,7 @@ namespace CVarUtils
      *  previously created CVar.
      *
      *  The exception "CVarUtils::CVarNonExistant" will be thrown if
-     *  the value does not exist.  
+     *  the value does not exist.
      *  eg. printf( "GUI help: %s\n", CVarUtils::GetHelp( "gui.Width" ) );
      */
     const std::string& GetHelp( const char* s );
@@ -285,7 +285,7 @@ namespace CVarUtils
      *  If "not" is add to the list, all the following substrings will not be saved.
      *  If "true" is used as the last argument, the saving will be verbose.
      */
-    inline bool Save( const std::string& sFileName, 
+    inline bool Save( const std::string& sFileName,
                       std::vector<std::string> vFilterSubstrings=std::vector<std::string>() );
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -297,7 +297,7 @@ namespace CVarUtils
      *  If "not" is add to the list, all the following substrings will not be loaded.
      *  If "true" is used as the last argument, the loading will be verbose.
      */
-    inline bool Load( const std::string& sFileName, 
+    inline bool Load( const std::string& sFileName,
                       std::vector<std::string> vFilterSubstrings=std::vector<std::string>() );
 
     /** Utilities for the indentation of XML output */
@@ -324,7 +324,7 @@ namespace CVarUtils {
         {
         public:
             ////////////////////////////////////////////////////////////////////////////////
-            CVar( std::string sVarName, 
+            CVar( std::string sVarName,
                   T TVarValue, std::string sHelp="No help available",
                   bool bSerialise=true,   /**< Input: if false, this CVar will not be taken into account when serialising (eg saving) the Trie */
                   std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ) = NULL,
@@ -332,11 +332,11 @@ namespace CVarUtils {
 
                 if( g_pCVarTrie.get() == NULL ){
                     InitCVars();
-                } 
+                }
                 if( g_pCVarTrie->Exists( sVarName ) ) {
                     throw CVarUtils::CVarAlreadyCreated;
                 }
-                
+
                 //std::cout << TToStream( std::cout, TVarValue );
                 m_pValueStringFuncPtr = CVarValueString; // template pointer to value string func
                 m_pTypeStringFuncPtr = CVarTypeString; // template pointer to type string func
@@ -355,14 +355,14 @@ namespace CVarUtils {
             ////////////////////////////////////////////////////////////////////////////////
             ~CVar() {
                 if( m_pVarData != NULL ) {
-                    delete m_pVarData; 
+                    delete m_pVarData;
                 }
             }
 
             ////////////////////////////////////////////////////////////////////////////////
             // Convert value to string representation
             // Call the original function that was installed at object creation time,
-            // regardless of current object class type T. 
+            // regardless of current object class type T.
             std::string GetValueAsString() {
                 if( m_pSerialisationFuncPtr != NULL ) {
                     std::stringstream sStream( "" );
@@ -377,7 +377,7 @@ namespace CVarUtils {
             ////////////////////////////////////////////////////////////////////////////////
             // Convert string representation to value
             // Call the original function that was installed at object creation time,
-            // regardless of current object class type T. 
+            // regardless of current object class type T.
             void SetValueFromString( const std::string &sValue ) {
                 if( m_pDeserialisationFuncPtr != NULL ) {
                     std::stringstream sStream( sValue );
@@ -393,11 +393,11 @@ namespace CVarUtils {
             ////////////////////////////////////////////////////////////////////////////////
             // Convert type to string representation
             // Call the original function that was installed at object creation time,
-            // regardless of current object class type T. 
+            // regardless of current object class type T.
             std::string type() {
                 return (*m_pTypeStringFuncPtr)( m_pVarData );
             }
-            
+
             ////////////////////////////////////////////////////////////////////////////////
             // Get values to and from a string representation (used for
             // serialization and console interaction)
@@ -407,7 +407,7 @@ namespace CVarUtils {
                 return m_sHelp;
             }
 
-            
+
         public: // Public data
             std::string   m_sVarName;
             T            *m_pVarData;
@@ -423,7 +423,7 @@ namespace CVarUtils {
             std::string (*m_pValueStringFuncPtr)( T *t );
 
             // pointer to func to set CVar Value from a string
-            void (*m_pSetValueFuncPtr)( T *t, const std::string & );            
+            void (*m_pSetValueFuncPtr)( T *t, const std::string & );
 
             std::ostream& (*m_pSerialisationFuncPtr)( std::ostream &, T );
             std::istream& (*m_pDeserialisationFuncPtr)( std::istream &, T ) ;
@@ -433,16 +433,16 @@ namespace CVarUtils {
 namespace CVarUtils {
     ////////////////////////////////////////////////////////////////////////////////
     template <class T> T& CreateCVar(
-            const std::string& s, 
+            const std::string& s,
             T val,
-            std::string sHelp, 
+            std::string sHelp,
             std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ),
-            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) 
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T )
             )
     {
         if( g_pCVarTrie.get() == NULL ){
             InitCVars();
-        } 
+        }
         if( g_pCVarTrie.get()->Exists( s ) ) {
             throw CVarAlreadyCreated;
         }
@@ -454,7 +454,7 @@ namespace CVarUtils {
 #ifdef DEBUG_CVAR
         printf( "Creating variable: %s.\n", s  );
 #endif
-        CVarUtils::CVar<T> *pCVar = new CVarUtils::CVar<T>( 
+        CVarUtils::CVar<T> *pCVar = new CVarUtils::CVar<T>(
                 s, val, sHelp, true, pSerialisationFuncPtr, pDeserialisationFuncPtr );
         g_pCVarTrie->Insert( s, (void *) pCVar );
         return *(pCVar->m_pVarData);
@@ -462,11 +462,11 @@ namespace CVarUtils {
 
     ////////////////////////////////////////////////////////////////////////////////
     template <class T> T& CreateGetCVar(
-            const std::string& s, 
+            const std::string& s,
             T val,
-            std::string sHelp, 
+            std::string sHelp,
             std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ),
-            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) 
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T )
             )
     {
         try {
@@ -510,16 +510,16 @@ namespace CVarUtils {
 
     ////////////////////////////////////////////////////////////////////////////////
     template <class T> T& CreateUnsavedCVar(
-            const std::string& s, 
+            const std::string& s,
             T val,
-            const std::string& sHelp, 
+            const std::string& sHelp,
             std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ),
-            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) 
+            std::istream& (*pDeserialisationFuncPtr)( std::istream &, T )
             )
     {
         if( g_pCVarTrie.get() == NULL ){
             InitCVars();
-        } 
+        }
         if( g_pCVarTrie.get()->Exists( s ) ) {
             throw CVarAlreadyCreated;
         }
@@ -549,7 +549,7 @@ namespace CVarUtils {
     template <class T> T& GetCVarRef( const char* s ) {
         if( g_pCVarTrie.get() == NULL ){
             InitCVars();
-        } 
+        }
         if( !g_pCVarTrie.get()->Exists( s ) ) {
             throw CVarNonExistant;
         }
@@ -558,17 +558,17 @@ namespace CVarUtils {
 
     ////////////////////////////////////////////////////////////////////////////////
     template <class T> T& GetCVarRef( std::string s ) {
-        return CVarUtils::GetCVarRef<T>( s.c_str() ); 
+        return CVarUtils::GetCVarRef<T>( s.c_str() );
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     template <class T> T GetCVar( const char* s ) {
-        return CVarUtils::GetCVarRef<T>( s ); 
+        return CVarUtils::GetCVarRef<T>( s );
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     template <class T> T GetCVar( std::string s ) {
-        return CVarUtils::GetCVarRef<T>( s.c_str() ); 
+        return CVarUtils::GetCVarRef<T>( s.c_str() );
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -580,7 +580,7 @@ namespace CVarUtils {
     inline std::string GetCVarString( std::string s ) {
         if( g_pCVarTrie.get() == NULL ){
             InitCVars();
-        } 
+        }
         if( !g_pCVarTrie.get()->Exists( s ) ) {
             throw CVarNonExistant;
         }
@@ -592,7 +592,7 @@ namespace CVarUtils {
     template <class T> void SetCVar( const char* s, T val ) {
         if( g_pCVarTrie.get() == NULL ){
             InitCVars();
-        } 
+        }
         if( !g_pCVarTrie.get()->Exists( s ) ) {
             throw CVarNonExistant;
         }
@@ -603,12 +603,12 @@ namespace CVarUtils {
     template <class T> void SetCVar( std::string s, T val ) {
         CVarUtils::SetCVar( s.c_str(), val );
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////////
     inline const std::string& GetHelp( const char* s ) {
         if( g_pCVarTrie.get() == NULL ){
             InitCVars();
-        } 
+        }
         if( !g_pCVarTrie.get()->Exists( s ) ) {
             throw CVarNonExistant;
         }
@@ -624,14 +624,14 @@ namespace CVarUtils {
     inline std::string GetValueAsString( void* cvar ) {
         return ((CVar<int>*) cvar)->GetValueAsString();
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////////
     inline void SetValueFromString( void* cvar, const std::string &sValue ) {
         ((CVar<int>*) cvar)->SetValueFromString( sValue );
     }
-   
+
     ////////////////////////////////////////////////////////////////////////////////
-    inline void PrintCVars( 
+    inline void PrintCVars(
             const char* sRowBeginTag = "",
             const char* sRowEndTag = "",
             const char* sCellBeginTag = "",
@@ -659,16 +659,16 @@ namespace CVarUtils {
                 nLongestVal = sVal.length();
             }
         }
- 
+
         if( suggest.size() > 1) {
             for( unsigned int ii = 0; ii < suggest.size(); ii++ ){
                 std::string sName = ( (CVarUtils::CVar<int>*) suggest[ii]->m_pNodeData )->m_sVarName;
                 std::string sVal = CVarUtils::GetValueAsString( suggest[ii]->m_pNodeData );
-                std::string sHelp = CVarUtils::GetHelp( sName ); 
+                std::string sHelp = CVarUtils::GetHelp( sName );
 //                sName.resize( nLongestName, ' ' );
 //                sVal.resize( nLongestVal, ' ' );
 //                printf( "%-s: Default value = %-30s   %-50s\n", sName.c_str(), sVal.c_str(), sHelp.empty() ? "" : sHelp.c_str() );
-                printf( "%s%s%-s%s%s  %-30s %s%s  %-50s%s%s\n", 
+                printf( "%s%s%-s%s%s  %-30s %s%s  %-50s%s%s\n",
                         sRowBeginTag,
                         sCellBeginTag, sName.c_str(), sCellEndTag,
                         sCellBeginTag, sVal.c_str(), sCellEndTag,
@@ -715,7 +715,7 @@ namespace CVarUtils {
             //            std::cerr << "ERROR opening cvars file for loading." << std::endl;
             return false;
         }
-    }  
+    }
 
     ////////////////////////////////////////////////////////////////////////////////
     inline std::string CVarSpc() {
@@ -746,25 +746,25 @@ namespace CVarUtils {
 
     ////////////////////////////////////////////////////////////////////////////////
     /// This function parses console input for us -- useful function for glconsole, textconsole, etc
-    bool ProcessCommand( 
+    bool ProcessCommand(
             const std::string& sCommand,   //< Input:
             std::string& sResult,          //< Output:
             bool bExecute = 1              //< Input:
             );
 
     ////////////////////////////////////////////////////////////////////////////////
-    bool ExecuteFunction( 
+    bool ExecuteFunction(
             const std::string& sCommand,            //< Input:
             CVarUtils::CVar<ConsoleFunc> *cvar,     //< Input:
             std::string& sResult,                   //< Output:
             bool bExecute = 1                       //< Input:
             );
- 
+
     ////////////////////////////////////////////////////////////////////////////////
-    bool IsConsoleFunc( 
+    bool IsConsoleFunc(
             TrieNode *node  //< Input:
             );
-    
+
     ////////////////////////////////////////////////////////////////////////////////
     bool IsConsoleFunc(
             const std::string sCmd      //< Input
