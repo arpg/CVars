@@ -59,7 +59,15 @@ FILE( RELATIVE_PATH REL_INCLUDE_DIR
 
 # Add package to CMake package registery for use from the build tree
 EXPORT( TARGETS cvars FILE "${CMAKE_CURRENT_BINARY_DIR}/CVarsTargets.cmake" )
-EXPORT( PACKAGE CVARS )
+
+# Add package to CMake package registery for use from the build tree
+option( EXPORT_${PROJECT_NAME}
+  "Should the ${PROJECT_NAME} package be exported for use by other software" ON )
+
+if( EXPORT_${PROJECT_NAME} )
+  export( PACKAGE ${PROJECT_NAME} )
+endif()
+
 # Install the export set for use with the install tree
 INSTALL( EXPORT CVarsTargets DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 
