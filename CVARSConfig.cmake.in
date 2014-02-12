@@ -7,5 +7,7 @@ if( NOT TARGET cvars AND NOT CVars_BINARY_DIR )
   include( "${CVARS_CMAKE_DIR}/CVarsTargets.cmake" )
 endif()
 
+set( CVARS_INCLUDE_DIRS "${CVars_SOURCE_DIR}" )
+set( CVARS_INCLUDE_DIR "${CVars_SOURCE_DIR}" )
 set( CVARS_LIBRARIES cvars )
 set( CVARS_LIBRARY   cvars )
