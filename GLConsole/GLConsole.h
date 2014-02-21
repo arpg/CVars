@@ -10,7 +10,7 @@
 #define __GLCONSOLE_H__
 
 
-#include <CVars/CVar.h> 
+#include <CVars/CVar.h>
 #include <CVars/Timestamp.h>
 
 #include <GLConsole/GLFont.h>
@@ -33,7 +33,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /// The type of line entered. Used to determine how each line is treated.
-enum LineProperty 
+enum LineProperty
 {
     LINEPROP_LOG,         // text coming from a text being logged to the console
     LINEPROP_COMMAND,     // command entered at the console
@@ -63,21 +63,21 @@ class ConsoleLine
 
 ////////////////////////////////////////////////////////////////////////////////
 /// This function returns a pointer to the very first GLConsole ever created.
-//  As there should only be one, this is ok.  
+//  As there should only be one, this is ok.
 //  This is a workaround for header only programming.
 inline GLConsole* GetConsole( GLConsole* pFirstConsole = NULL )
 {
-    static GLConsole* pSavedConsole = NULL; 
+    static GLConsole* pSavedConsole = NULL;
     if( pSavedConsole ){
         return pSavedConsole;
     }
     if( pFirstConsole == NULL ){
-        // if pFirstConsole is NULL (e.g. user is asking for this first console), then 
-        // pSavedConsole BETTER not also be NULL; 
+        // if pFirstConsole is NULL (e.g. user is asking for this first console), then
+        // pSavedConsole BETTER not also be NULL;
         fprintf( stderr, "ERROR: GLConsole has not been initialized!\n" );
     }
     else{
-        pSavedConsole = pFirstConsole;        
+        pSavedConsole = pFirstConsole;
     }
     return pSavedConsole;
 }
@@ -101,7 +101,7 @@ inline bool StringIndexPairGreater( std::pair<std::string,int> e1, std::pair<std
 ////////////////////////////////////////////////////////////////////////////////
 /// Utility function.
 inline std::string FindLevel( std::string sString, int iMinRecurLevel )
-{   
+{
     int level = 0;
     int index = sString.length();
     for( unsigned int ii = 0; ii < sString.length(); ii++ ) {
@@ -140,15 +140,15 @@ inline std::string& RemoveSpaces( std::string &str )
 ///  The GLConsole class.
 class GLConsole
 {
-    friend void GLConsoleCheckInit( GLConsole* pConsole ); 
+    friend void GLConsoleCheckInit( GLConsole* pConsole );
 
     public:
          GLConsole();
         ~GLConsole();
 
-        // call this after OpenGL is up 
+        // call this after OpenGL is up
         void Init();
- 
+
         //Prints to console using familiar printf style
         void Printf(const char *msg, ...);
         void Printf_All(const char *msg, ...);
@@ -156,14 +156,14 @@ class GLConsole
         //error and help versions of printf.
         void PrintError(const char *msg, ...);
         void PrintHelp(const char *msg, ...);
-        
+
         //commands to the console...
         void ToggleConsole();
         bool IsOpen();
 		bool IsChanging();
         void OpenConsole();
         void CloseConsole();
- 
+
         //scrolling text up and down in the console
         void ScrollUp(int pixels);
         void ScrollDown(int pixels);
@@ -185,12 +185,15 @@ class GLConsole
         /// Clear the current command.
         void ClearCurrentCommand();
 
+        /// Clear backwards until the last dot
+        void ClearCurrentWord();
+
         /// enter a full line of text to the log text.
         void EnterLogLine(const char *line, LineProperty prop = LINEPROP_LOG, bool display = true);
 
         /// display previous command in history on command line.
         void HistoryBack();
-   
+
         /// go forward in the history.
         void HistoryForward();
 
@@ -214,22 +217,22 @@ class GLConsole
 
         //help
         bool Help(std::vector<std::string> *vArgs);
-        
+
         GLFont * GetFont() const { return m_pGLFont; }
 
         void SetLogColor(float r, float g, float b) {
             m_logColor.r = r; m_logColor.g = g; m_logColor.b = b;
         }
 
-        void SetCommandColor( float r, float g, float b ) { 
-            m_commandColor.r = r; m_commandColor.g = g; m_commandColor.b = b; 
+        void SetCommandColor( float r, float g, float b ) {
+            m_commandColor.r = r; m_commandColor.g = g; m_commandColor.b = b;
         }
 
         void SetFunctionColor(float r, float g, float b) {
             m_functionColor.r = r; m_functionColor.g = g; m_functionColor.b = b;
         }
-      
-        void SetErrorColor(float r, float g, float b) { 
+
+        void SetErrorColor(float r, float g, float b) {
             m_errorColor.r = r; m_errorColor.g = g; m_errorColor.b = b;
         }
 
@@ -272,7 +275,7 @@ class GLConsole
         bool          m_bExecutingHistory; //Are we executing a script or not.
         bool          m_bSavingScript; // Are we saving a script
         bool          m_bConsoleOpen; // whether the console is drawing or not
-        bool          m_bIsChanging; // whether the console is currently transitioning 
+        bool          m_bIsChanging; // whether the console is currently transitioning
         TimeStamp     m_Timer;
         TimeStamp     m_BlinkTimer;
         int           m_nWidth;
@@ -285,7 +288,7 @@ class GLConsole
         int           m_nScrollPixels;  //the number of pixels the text has been scrolled "up"
         int           m_nCommandNum;
         GLFont*       m_pGLFont;
- 
+
         // Text colors
         CVarUtils::Color&      m_logColor;
         CVarUtils::Color&      m_commandColor;
@@ -344,7 +347,7 @@ class GLConsole
 #      include <windows.h>
 #    endif
 #    include <GL/gl.h>
-#    include <GL/glu.h> 
+#    include <GL/glu.h>
 #    include <GL/glut.h>
 #  endif
 #endif
@@ -366,7 +369,7 @@ class GLConsole
  * Constructor
  */
 inline GLConsole::GLConsole() :
-    // Init our member cvars  (can't init the names in the class decleration) 
+    // Init our member cvars  (can't init the names in the class decleration)
     m_fConsoleBlinkRate( CVarUtils::CreateCVar<float>(    "console.BlinkRate", 4.0 ) ), // cursor blinks per sec
     m_fConsoleAnimTime( CVarUtils::CreateCVar<float>(     "console.AnimTime", 0.1 ) ),     // time the console animates
     m_nConsoleMaxHistory( CVarUtils::CreateCVar<int>(     "console.history.MaxHistory", 100 ) ), // max lines ofconsole history
@@ -510,25 +513,25 @@ inline bool GLConsole::IsOpen()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline bool GLConsole::IsChanging() 
-{ 
+inline bool GLConsole::IsChanging()
+{
     return m_bIsChanging;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline void GLConsole::OpenConsole() 
-{ 
-    m_bConsoleOpen = true; 
+inline void GLConsole::OpenConsole()
+{
+    m_bConsoleOpen = true;
     m_bIsChanging = true;
-    m_Timer.Stamp(); 
+    m_Timer.Stamp();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline void GLConsole::CloseConsole() 
-{ 
+inline void GLConsole::CloseConsole()
+{
     m_bConsoleOpen = false;
     m_bIsChanging = true;
-    m_Timer.Stamp(); 
+    m_Timer.Stamp();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,7 +654,7 @@ inline int GLConsole::_GetConsoleHeight()
  * Clears all of the console's history
  */
 inline void GLConsole::HistoryClear()
-{	
+{
     m_consoleText.clear();
 }
 
@@ -701,7 +704,7 @@ inline bool GLConsole::HistorySave( std::string sFileName )
  * Start script recording
  */
 inline void GLConsole::ScriptRecordStart()
-{	
+{
     m_ScriptText.clear();
     m_bSavingScript = true;
 }
@@ -711,7 +714,7 @@ inline void GLConsole::ScriptRecordStart()
  * Stop script recording
  */
 inline void GLConsole::ScriptRecordStop()
-{	
+{
     if( !m_bSavingScript ) {
         return;
     }
@@ -747,7 +750,7 @@ inline void GLConsole::ScriptRecordPause()
  * Print the script to the console
  */
 inline void GLConsole::ScriptShow()
-{	
+{
     if( m_bSavingScript ) {
         m_ScriptText.pop_front();
         m_ScriptText.pop_front();
@@ -801,7 +804,7 @@ inline bool GLConsole::ScriptRun( std::string sFileName )
  * Save the current script to a file
  */
 inline bool GLConsole::ScriptSave( std::string sFileName )
-{	
+{
     if( !m_bExecutingHistory ) {
         m_bExecutingHistory = true;
 
@@ -942,14 +945,14 @@ inline bool GLConsole::_LoadExecuteHistory( std::string sFileName, bool bExecute
 inline void GLConsole::RenderConsole()
 {
     _CheckInit();
-    if( m_bConsoleOpen || m_bIsChanging ) {	
+    if( m_bConsoleOpen || m_bIsChanging ) {
         glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT | GL_SCISSOR_BIT | GL_TRANSFORM_BIT );
 
         glDisable(GL_LIGHTING);
 
         //blend function based on source alpha
         glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA ); 
+        glBlendFunc( GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA );
 
         //get the width and heigtht of the viewport
         glGetIntegerv(GL_VIEWPORT, &m_Viewport.x );
@@ -975,29 +978,29 @@ inline void GLConsole::RenderConsole()
         glDisable(GL_DEPTH_TEST); //for transparency
         glEnable(GL_BLEND);
         glColor4f( m_consoleColor.r,
-                m_consoleColor.g, 
+                m_consoleColor.g,
                 m_consoleColor.b,
                 m_consoleColor.a );
-        
+
         glNormal3f( 0.0f, 0.0f, 1.0f );
-        GLfloat verts[] = { 0.0f, bottom, 
+        GLfloat verts[] = { 0.0f, bottom,
                             (GLfloat)m_Viewport.width, bottom,
                             (GLfloat)m_Viewport.width, (GLfloat)m_Viewport.height,
                             0.0f, (GLfloat)m_Viewport.height };
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_FLOAT, 0, verts);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        glDisableClientState(GL_VERTEX_ARRAY);            
+        glDisableClientState(GL_VERTEX_ARRAY);
 
         //draw text
         _RenderText();
 
-        //restore old matrices and properties...	
+        //restore old matrices and properties...
         glMatrixMode(GL_PROJECTION);
-        glPopMatrix();										
-        glMatrixMode(GL_MODELVIEW);						
         glPopMatrix();
-        
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+
         glPopAttrib();
     }
 }
@@ -1046,22 +1049,22 @@ inline void GLConsole::_RenderText()
             blink = '_';
         }
         glColor3f(m_commandColor.r, m_commandColor.g, m_commandColor.b);
-        m_pGLFont->glPrintf( m_nConsoleLeftMargin, lineLoc - m_nScrollPixels, 
+        m_pGLFont->glPrintf( m_nConsoleLeftMargin, lineLoc - m_nScrollPixels,
                 "> " + m_sCurrentCommandBeg );
         int size = m_sCurrentCommandBeg.length();
         std::string em = "";
         for(int i=0;i<size;i++) {
             em = em+" ";
         }
-        m_pGLFont->glPrintf( m_nConsoleLeftMargin, lineLoc - m_nScrollPixels, 
+        m_pGLFont->glPrintf( m_nConsoleLeftMargin, lineLoc - m_nScrollPixels,
                 "> " + em + blink );
-        m_pGLFont->glPrintf( m_nConsoleLeftMargin, lineLoc - m_nScrollPixels, 
+        m_pGLFont->glPrintf( m_nConsoleLeftMargin, lineLoc - m_nScrollPixels,
                 "> " + em + m_sCurrentCommandEnd );
 
         lineLoc += m_nTextHeight + m_nConsoleLineSpacing;
 
         int count = 0;
-        for(  int i = 1 ; i < lines; i++ ) {	
+        for(  int i = 1 ; i < lines; i++ ) {
             if( count >= m_nConsoleMaxLines)
                 continue;
             if( (int)m_consoleText.size() > i - 1 ) {
@@ -1102,14 +1105,14 @@ inline void GLConsole::_RenderText()
                 int iterations = (fulltext.length() / chars_per_line) + 1;
                 for(int j = iterations -1; j >= 0 ; j-- ) {
                     //print one less line now that I have wrapped to another line
-                    if( j < iterations - 1) 
+                    if( j < iterations - 1)
                     {
                         lines--;
                         lineLoc += m_nTextHeight + m_nConsoleLineSpacing;
                     }
                     count++;
                     int start = fulltext.substr(j*chars_per_line, chars_per_line).find_first_not_of( ' ' );
-                    if( start >= 0  ) { 
+                    if( start >= 0  ) {
                         m_pGLFont->glPrintfFast(m_nConsoleLeftMargin, lineLoc - m_nScrollPixels,
                                 fulltext.substr(j*chars_per_line+start, chars_per_line) );
                     }
@@ -1146,15 +1149,15 @@ inline void GLConsole::ScrollUp(int pixels)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-inline void GLConsole::ScrollUpLine() 
-{ 
-    ScrollUp( m_nTextHeight + m_nConsoleLineSpacing ); 
+inline void GLConsole::ScrollUpLine()
+{
+    ScrollUp( m_nTextHeight + m_nConsoleLineSpacing );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 inline void GLConsole::ScrollDownLine()
-{ 
-    ScrollDown(m_nTextHeight + m_nConsoleLineSpacing); 
+{
+    ScrollDown(m_nTextHeight + m_nConsoleLineSpacing);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1203,22 +1206,22 @@ inline void GLConsole::CursorToEndOfLine()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-inline void GLConsole::ScrollUpPage() 
-{ 
-    ScrollUp( (int)((m_Viewport.height*m_fOverlayPercent) - 2*m_pGLFont->CharHeight())); 
+inline void GLConsole::ScrollUpPage()
+{
+    ScrollUp( (int)((m_Viewport.height*m_fOverlayPercent) - 2*m_pGLFont->CharHeight()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 inline void GLConsole::ScrollDownPage()
-{ 
-    ScrollDown( (int)( (m_Viewport.height*m_fOverlayPercent) - 2*m_pGLFont->CharHeight() ) ); 
+{
+    ScrollDown( (int)( (m_Viewport.height*m_fOverlayPercent) - 2*m_pGLFont->CharHeight() ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * What to do when certain special keys are pressed
  * such as arrow keys, home, end, page up, page down
- * 
+ *
  */
 inline void GLConsole::SpecialFunc( int key )
 {
@@ -1262,18 +1265,7 @@ inline void GLConsole::SpecialFunc( int key )
         case GLUT_ACTIVE_ALT:
             switch (key) {
                 case GLUT_KEY_LEFT:
-                    // Remove a level from tab-completion
-                    const size_t nPosEqual = m_sCurrentCommandBeg.rfind('=');
-                    if(nPosEqual != m_sCurrentCommandBeg.npos) {
-                        m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosEqual);
-                    }else{
-                        const size_t nPosDot = m_sCurrentCommandBeg.rfind('.');
-                        if(nPosDot != m_sCurrentCommandBeg.npos) {
-                            m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosDot);
-                        }else{
-                            m_sCurrentCommandBeg = "";
-                        }
-                    }
+                    ClearCurrentWord();
                     break;
             }
             break;
@@ -1295,7 +1287,7 @@ inline void GLConsole::SpecialFunc( int key )
                 case GLUT_KEY_UP:
                     HistoryBack();
                     break;
-                case GLUT_KEY_DOWN: 
+                case GLUT_KEY_DOWN:
                     HistoryForward();
                     break;
                 case GLUT_KEY_HOME:
@@ -1339,6 +1331,9 @@ inline void GLConsole::KeyboardFunc( unsigned char key)
                     break;
                 case('c' - 96):
                     ClearCurrentCommand();
+                    break;
+                case('w' - 96):
+                    ClearCurrentWord();
                     break;
                 default:
                     break;
@@ -1393,10 +1388,27 @@ inline void GLConsole::KeyboardFunc( unsigned char key)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-inline void GLConsole::ClearCurrentCommand() 
+inline void GLConsole::ClearCurrentCommand()
 {
-    m_sCurrentCommandBeg = ""; 
-    m_sCurrentCommandEnd = ""; 
+    m_sCurrentCommandBeg = "";
+    m_sCurrentCommandEnd = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+inline void GLConsole::ClearCurrentWord()
+{
+  // Remove a level from tab-completion
+  const size_t nPosEqual = m_sCurrentCommandBeg.rfind('=');
+  if(nPosEqual != m_sCurrentCommandBeg.npos) {
+    m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosEqual);
+  }else{
+    const size_t nPosDot = m_sCurrentCommandBeg.rfind('.');
+    if(nPosDot != m_sCurrentCommandBeg.npos) {
+      m_sCurrentCommandBeg = m_sCurrentCommandBeg.substr(0, nPosDot);
+    }else{
+      m_sCurrentCommandBeg = "";
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1481,12 +1493,12 @@ inline void GLConsole::HistoryForward()
 ////////////////////////////////////////////////////////////////////////////////
 inline bool GLConsole::_IsConsoleFunc( TrieNode *node )
 {
-    if( typeid( ConsoleFunc ).name() 
+    if( typeid( ConsoleFunc ).name()
             == ((CVarUtils::CVar<int>*)node->m_pNodeData)->type() ) {
         return true;
     }
 
-    return false; 
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1535,7 +1547,7 @@ void GLConsole::PrintAllCVars()
         for( unsigned int ii = 0; ii < suggest.size(); ii++ ){
             std::string sName = ( (CVarUtils::CVar<int>*) suggest[ii]->m_pNodeData )->m_sVarName;
             std::string sVal = CVarUtils::GetValueAsString( suggest[ii]->m_pNodeData );
-            std::string sHelp = CVarUtils::GetHelp( sName ); 
+            std::string sHelp = CVarUtils::GetHelp( sName );
             sName.resize( nLongestName, ' ' );
             sVal.resize( nLongestVal, ' ' );
             printf( "%-s: Default value = %-30s   %-50s\n", sName.c_str(), sVal.c_str(), sHelp.empty() ? "" : sHelp.c_str() );
@@ -1570,7 +1582,7 @@ inline void GLConsole::_TabComplete()
         std::vector<TrieNode*> suggest = g_pCVarTrie->CollectAllNodes(node);
         //output suggestions
         if( suggest.size() > 1) {
-            std::vector<std::pair<std::string,int> > suggest_name_index_full;            
+            std::vector<std::pair<std::string,int> > suggest_name_index_full;
             std::vector<std::pair<std::string,int> > suggest_name_index_set;
             // Build list of names with index from suggest
             // Find lowest recursion level
@@ -1594,7 +1606,7 @@ inline void GLConsole::_TabComplete()
                 iCurLevel = _FindRecursionLevel( sCurString );
                 if( sCurLevel.length()==0 ) {
                     if( iCurLevel == iMinRecurLevel ) {
-                        sCurLevel = "";    
+                        sCurLevel = "";
                         suggest_name_index_set.
                             push_back( std::pair<std::string,int>( sCurString,suggest_name_index_full[ii].second ) );
                     } else {
@@ -1607,7 +1619,7 @@ inline void GLConsole::_TabComplete()
                         // Add new substring at given level
                         sCurLevel = FindLevel( sCurString, iMinRecurLevel );
                         suggest_name_index_set.push_back( std::pair<std::string,int>( sCurLevel,suggest_name_index_full[ii].second ) );
-                    } 
+                    }
                 }
             }
 
@@ -1720,7 +1732,7 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
             EnterLogLine( m_sCurrentCommand.c_str(), LINEPROP_FUNCTION );
         }
         else { //print value associated with this cvar
-            EnterLogLine( ( m_sCurrentCommand + " = " + 
+            EnterLogLine( ( m_sCurrentCommand + " = " +
                         CVarUtils::GetValueAsString(node->m_pNodeData)).c_str(), LINEPROP_LOG );
         }
     }
@@ -1733,7 +1745,7 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
             std::string tmp = m_sCurrentCommand.substr(0, eq_pos ) ;
             command = RemoveSpaces( tmp );
             value = m_sCurrentCommand.substr( eq_pos+1, m_sCurrentCommand.length() );
-            if( !value.empty() ) { 
+            if( !value.empty() ) {
                 value = RemoveSpaces( value );
                 if( ( node = g_pCVarTrie->Find(command) ) ) {
                     if( bExecute ) {
@@ -1742,9 +1754,9 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
                     EnterLogLine( ( command + " = " + value ).c_str(), LINEPROP_LOG );
                 }
             }
-            else {  
+            else {
                 if( bExecute ) {
-                    std::string out = "-glconsole: " + command + ": command not found"; 
+                    std::string out = "-glconsole: " + command + ": command not found";
                     EnterLogLine( out.c_str(), LINEPROP_ERROR );
                 }
                 bSuccess = false;
@@ -1762,7 +1774,7 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
             }
             else {
                 if( bExecute ) {
-                    std::string out = "-glconsole: " + function + ": function not found"; 
+                    std::string out = "-glconsole: " + function + ": function not found";
                     EnterLogLine( out.c_str(), LINEPROP_ERROR );
                 }
                 bSuccess = false;
@@ -1770,7 +1782,7 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
         }
         else if( !m_sCurrentCommand.empty() ) {
             if( bExecute ) {
-                std::string out = "-glconsole: " + m_sCurrentCommand + ": command not found"; 
+                std::string out = "-glconsole: " + m_sCurrentCommand + ": command not found";
                 EnterLogLine( out.c_str(), LINEPROP_ERROR );
             }
             bSuccess = false;
