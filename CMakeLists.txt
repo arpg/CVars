@@ -7,18 +7,21 @@ SET( VERSION_MINOR 3 )
 SET( VERSION_PATCH 0 )
 SET( VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH} )
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
-
-###############################################################################
-# Setup strict debugging environment.
-IF( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" )
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -g -fno-strict-aliasing ")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -fno-strict-aliasing ")
-ENDIF( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" )
-
 # Set version values in CVarVersion.h  (see CVarVersion.h.in)
 CONFIGURE_FILE( CVars/CVarVersion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/CVars/CVarVersion.h IMMEDIATE )
+
+###############################################################################
+# Setup compiler flags
+IF( NOT MSVC )
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
+
+    # Setup strict debugging environment.
+    IF( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" )
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -g -fno-strict-aliasing ")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g -fno-strict-aliasing ")
+    ENDIF( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" )
+ENDIF( NOT MSVC )
 
 ###############################################################################
 # Build CVars library
