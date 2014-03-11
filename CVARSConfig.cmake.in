@@ -1,13 +1,12 @@
 # Compute paths
 get_filename_component( CVARS_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH )
-set( CVARS_INCLUDE_DIR @CONF_INCLUDE_DIR@ )
 
 # Library dependencies (contains definitions for IMPORTED targets)
 if( NOT TARGET cvars AND NOT CVars_BINARY_DIR )
   include( "${CVARS_CMAKE_DIR}/CVarsTargets.cmake" )
 endif()
 
-set( CVARS_INCLUDE_DIRS "${CVars_SOURCE_DIR}" )
-set( CVARS_INCLUDE_DIR "${CVars_SOURCE_DIR}" )
+set( CVARS_INCLUDE_DIRS "@EXPORT_LIB_INC_DIR@" )
+set( CVARS_INCLUDE_DIR  "@EXPORT_LIB_INC_DIR@" )
 set( CVARS_LIBRARIES cvars )
 set( CVARS_LIBRARY   cvars )

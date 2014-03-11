@@ -68,6 +68,7 @@ option( EXPORT_${PROJECT_NAME}
   "Should the ${PROJECT_NAME} package be exported for use by other software" ON )
 
 if( EXPORT_${PROJECT_NAME} )
+  set( EXPORT_LIB_INC_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
   export( PACKAGE ${PROJECT_NAME} )
 endif()
 
