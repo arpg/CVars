@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.8 )
-PROJECT( CVars )
+PROJECT( CVARS )
 
 # Be sure to change these with each update
 SET( VERSION_MAJOR 2 )
@@ -61,7 +61,7 @@ FILE( RELATIVE_PATH REL_INCLUDE_DIR
     "${CMAKE_INSTALL_PREFIX}/include" )
 
 # Add package to CMake package registery for use from the build tree
-EXPORT( TARGETS cvars FILE "${CMAKE_CURRENT_BINARY_DIR}/CVarsTargets.cmake" )
+EXPORT( TARGETS cvars FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake" )
 
 # Add package to CMake package registery for use from the build tree
 option( EXPORT_${PROJECT_NAME}
@@ -73,7 +73,7 @@ if( EXPORT_${PROJECT_NAME} )
 endif()
 
 # Install the export set for use with the install tree
-INSTALL( EXPORT CVarsTargets DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+INSTALL( EXPORT ${PROJECT_NAME}Targets DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 
 # Create the CVARSConfig.cmake file for other cmake projects: FIND_PACKAGE( CVARS )
 # ... for the build tree
