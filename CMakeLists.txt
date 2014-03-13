@@ -68,7 +68,6 @@ option( EXPORT_${PROJECT_NAME}
   "Should the ${PROJECT_NAME} package be exported for use by other software" ON )
 
 if( EXPORT_${PROJECT_NAME} )
-  set( EXPORT_LIB_INC_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
   export( PACKAGE ${PROJECT_NAME} )
 endif()
 
@@ -77,6 +76,7 @@ INSTALL( EXPORT ${PROJECT_NAME}Targets DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 
 # Create the CVARSConfig.cmake file for other cmake projects: FIND_PACKAGE( CVARS )
 # ... for the build tree
+set( EXPORT_LIB_INC_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
 SET( CONF_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/CVARSConfig.cmake.in
                 ${CMAKE_CURRENT_BINARY_DIR}/CVARSConfig.cmake @ONLY )
