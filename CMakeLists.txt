@@ -14,7 +14,11 @@ CONFIGURE_FILE( CVars/CVarVersion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/CVars/CVarVer
 # Setup compiler flags
 IF( NOT MSVC )
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++0x")
+
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    endif()
 
     # Setup strict debugging environment.
     IF( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" )
