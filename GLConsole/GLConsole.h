@@ -341,7 +341,11 @@ class GLConsole
 #else
 #  ifdef _ANDROID_
 #    include <EGL/egl.h>
-#    include <GLES/gl.h>
+#    ifdef HAVE_GLES_2
+#      include <GLES2/gl2.h>
+#    else
+#      include <GLES/gl.h>
+#    endif // HAVE_GLES_2
 #  else
 #    ifdef WIN32
 #      include <windows.h>
@@ -355,7 +359,6 @@ class GLConsole
 #include <algorithm>
 #include <cstring>
 
-#include "GLConsole/GLConsole.h"
 #include "CVars/CVar.h"
 #include "CVars/TrieNode.h"
 
@@ -982,7 +985,6 @@ inline void GLConsole::RenderConsole()
                 m_consoleColor.b,
                 m_consoleColor.a );
 
-        glNormal3f( 0.0f, 0.0f, 1.0f );
         GLfloat verts[] = { 0.0f, bottom,
                             (GLfloat)m_Viewport.width, bottom,
                             (GLfloat)m_Viewport.width, (GLfloat)m_Viewport.height,
