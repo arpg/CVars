@@ -1,2 +1,7 @@
 CVars/CVarVersion.h
+CMakeLists.txt.user
 build
+debug
+abuild
+libs
+.DS_Store
