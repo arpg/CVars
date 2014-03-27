@@ -979,18 +979,19 @@ inline int TextConsoleInstance::_FindRecursionLevel( std::string sCommand )
 ////////////////////////////////////////////////////////////////////////////////
 inline void TextConsoleInstance::_TabComplete()
 {
-    TrieNode* node = g_pCVarTrie->FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
+    Trie& trie = CVarUtils::TrieInstance();
+    TrieNode* node = trie.FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
     if( !node ) {
         return;
     }
     else if( node->m_nNodeType == TRIE_LEAF || (node->m_children.size() == 0) ) {
-        node = g_pCVarTrie->Find(m_sCurrentCommandBeg);
+        node = trie.Find(m_sCurrentCommandBeg);
         if( !_IsConsoleFunc( node ) ) {
             m_sCurrentCommandBeg += " = " + CVarUtils::GetValueAsString(node->m_pNodeData);
         }
     } else {
         // Retrieve suggestions (retrieve all leaves by traversing from current node)
-        std::vector<TrieNode*> suggest = g_pCVarTrie->CollectAllNodes(node);
+        std::vector<TrieNode*> suggest = trie.CollectAllNodes(node);
         //output suggestions
         if( suggest.size() > 1) {
             std::vector<std::pair<std::string,int> > suggest_name_index_full;            
@@ -1115,6 +1116,7 @@ inline bool TextConsoleInstance::_ProcessCurrentCommand( bool bExecute )
     std::string sRes;
     bool bSuccess = true;
 
+    Trie& trie = CVarUtils::TrieInstance();
     std::string m_sCurrentCommand = m_sCurrentCommandBeg+m_sCurrentCommandEnd;
 
     // remove leading and trailing spaces
@@ -1133,7 +1135,7 @@ inline bool TextConsoleInstance::_ProcessCurrentCommand( bool bExecute )
     }
 
     // Simply print value if the command is just a variable
-    if( ( node = g_pCVarTrie->Find( m_sCurrentCommand ) ) ) {
+    if( ( node = trie.Find( m_sCurrentCommand ) ) ) {
         //execute function if this is a function cvar
         if( _IsConsoleFunc( node ) ) {
             bSuccess &= CVarUtils::ExecuteFunction( m_sCurrentCommand, (CVarUtils::CVar<ConsoleFunc>*) node->m_pNodeData, sRes, bExecute );
@@ -1155,7 +1157,7 @@ inline bool TextConsoleInstance::_ProcessCurrentCommand( bool bExecute )
             value = m_sCurrentCommand.substr( eq_pos+1, m_sCurrentCommand.length() );
             if( !value.empty() ) { 
                 value = RemoveSpaces( value );
-                if( ( node = g_pCVarTrie->Find(command) ) ) {
+                if( ( node = trie.Find(command) ) ) {
                     if( bExecute ) {
                         CVarUtils::SetValueFromString( node->m_pNodeData, value );
                     }
@@ -1173,10 +1175,9 @@ inline bool TextConsoleInstance::_ProcessCurrentCommand( bool bExecute )
         //check if this is a function
         else if( ( eq_pos = m_sCurrentCommand.find(" ") ) != -1 ) {
             std::string function;
-            std::string args;
             function = m_sCurrentCommand.substr( 0, eq_pos );
             //check if this is a valid function name
-            if( ( node = g_pCVarTrie->Find( function ) ) && _IsConsoleFunc( node ) ) {
+            if( ( node = trie.Find( function ) ) && _IsConsoleFunc( node ) ) {
                 bSuccess &= CVarUtils::ExecuteFunction( m_sCurrentCommand, (CVarUtils::CVar<ConsoleFunc>*)node->m_pNodeData, sRes, bExecute );
                 EnterLogLine( m_sCurrentCommand.c_str(), LINEPROP_FUNCTION );
             }

@@ -38,10 +38,11 @@ inline bool ConsoleHelp( std::vector<std::string> *vArgs )
 /// Looks for the lists of substrings provided in vArgs in the CVarTrie.
 inline bool ConsoleFind( std::vector<std::string> *vArgs )
 {
+    Trie& trie = CVarUtils::TrieInstance();
     FLConsoleInstance* pConsole = GetConsole();
     if( vArgs != NULL && vArgs->size() > 0 ) {
         for( size_t i=0; i<vArgs->size(); i++ ) {
-            std::vector<std::string> vCVarNames = g_pCVarTrie->FindListSubStr( vArgs->at(i) );
+            std::vector<std::string> vCVarNames = trie.FindListSubStr( vArgs->at(i) );
             
             for( size_t j=0; j<vCVarNames.size(); j++ ) { 
                 pConsole->Printf( "%s", vCVarNames[j].c_str() );       

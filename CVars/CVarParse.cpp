@@ -33,6 +33,8 @@ namespace CVarUtils
             bool bExecute                       //< Input:
             )
     {
+        Trie& trie = TrieInstance();
+
         TrieNode*node;
         bool bSuccess = true;
         std::string sCmd = sCommand;
@@ -48,7 +50,7 @@ namespace CVarUtils
         }
 
         // Simply print value if the command is just a variable
-        if( ( node = g_pCVarTrie->Find( sCmd ) ) ) {
+        if( ( node = trie.Find( sCmd ) ) ) {
             //execute function if this is a function cvar
             if( IsConsoleFunc( node ) ) {
                 bSuccess &= ExecuteFunction( 
@@ -73,7 +75,7 @@ namespace CVarUtils
                 value = sCmd.substr( eq_pos+1, sCmd.length() );
                 if( !value.empty() ) {
                     value = _RemoveSpaces( value );
-                    if( ( node = g_pCVarTrie->Find(command) ) ) {
+                    if( ( node = trie.Find(command) ) ) {
                         if( bExecute ) {
                             SetValueFromString( node->m_pNodeData, value );
                         }
@@ -97,7 +99,7 @@ namespace CVarUtils
                 std::string args;
                 function = sCmd.substr( 0, eq_pos );
                 //check if this is a valid function name
-                if( ( node = g_pCVarTrie->Find( function ) ) && IsConsoleFunc( node ) ) {
+                if( ( node = trie.Find( function ) ) && IsConsoleFunc( node ) ) {
                     bSuccess &= ExecuteFunction( 
                             sCmd,
                             ( CVar<ConsoleFunc>*)node->m_pNodeData,
@@ -180,7 +182,7 @@ namespace CVarUtils
 
     ////////////////////////////////////////////////////////////////////////////////
     bool IsConsoleFunc( const std::string sCmd ) {
-        TrieNode* pNode = g_pCVarTrie->Find( sCmd );
+        TrieNode* pNode = TrieInstance().Find( sCmd );
         if( pNode == NULL ) { return false; }
         if( typeid( ConsoleFunc ).name() == ((CVar<int>*)pNode->m_pNodeData)->type() ) {
             return true;
@@ -227,12 +229,14 @@ namespace CVarUtils
                       std::string& sCommand,
                       std::vector<std::string>& vResult
                       ) {
+        Trie& trie = TrieInstance();
+
         sCommand = _RemoveSpaces( sCommand );
-        TrieNode* node = g_pCVarTrie->FindSubStr( sCommand );
+        TrieNode* node = trie.FindSubStr( sCommand );
         if( node == NULL ) {
             std::string sCommandStripEq = sCommand.substr( 0, sCommand.rfind( "=" ) );
             sCommandStripEq = _RemoveSpaces( sCommandStripEq );
-            node = g_pCVarTrie->FindSubStr( sCommandStripEq );
+            node = trie.FindSubStr( sCommandStripEq );
             if( node != NULL ) { sCommand = sCommandStripEq; }
         }
         if( node == NULL ) {
@@ -240,7 +244,7 @@ namespace CVarUtils
         }
         else if( node->m_nNodeType == TRIE_LEAF || 
                  ( node->m_children.size() == 0 ) ) {
-            node = g_pCVarTrie->Find( sCommand );
+            node = trie.Find( sCommand );
             if( !IsConsoleFunc( node ) ) {
                 sCommand += " = " + CVarUtils::GetValueAsString( node->m_pNodeData );
                 vResult.push_back( sCommand );
@@ -248,7 +252,7 @@ namespace CVarUtils
         } 
         else {
             // Retrieve suggestions (retrieve all leaves by traversing from current node)
-            std::vector<TrieNode*> suggest = g_pCVarTrie->CollectAllNodes( node );
+            std::vector<TrieNode*> suggest = trie.CollectAllNodes( node );
             //output suggestions
             if( suggest.size() == 1 ) {
                 // Is this what the use wants? Clear the left bit...

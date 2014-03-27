@@ -12,14 +12,14 @@
 #include "CVars/CVar.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode() : m_pNodeData(nullptr),
+TrieNode::TrieNode() : m_pNodeData(0),
                        m_nNodeType(TRIE_LEAF),
                        m_cNodeChar(0) {
     m_children.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode( TrieNodeType t ) : m_pNodeData(nullptr),
+TrieNode::TrieNode( TrieNodeType t ) : m_pNodeData(0),
                                        m_nNodeType(t),
                                        m_cNodeChar(0)
 {
@@ -27,7 +27,7 @@ TrieNode::TrieNode( TrieNodeType t ) : m_pNodeData(nullptr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode( std::string s ) :  m_pNodeData(nullptr),
+TrieNode::TrieNode( std::string s ) :  m_pNodeData(0),
                                        m_nNodeType(TRIE_LEAF),
                                        m_sLeafText(s),
                                        m_cNodeChar(0)
@@ -36,7 +36,7 @@ TrieNode::TrieNode( std::string s ) :  m_pNodeData(nullptr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TrieNode::TrieNode( char c ) : m_pNodeData(nullptr),
+TrieNode::TrieNode( char c ) : m_pNodeData(0),
                                m_nNodeType(TRIE_NODE),
                                m_cNodeChar(c)
 {

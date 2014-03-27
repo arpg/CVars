@@ -42,20 +42,16 @@
 #include <CVars/TrieNode.h>
 #include <CVars/CVarVectorIO.h>
 
-////////////////////////////////////////////////////////////////////////////////
-// A global Trie structure holds all of the variables organized by their string
-// name.  He lives in Trie.cpp.
-//extern Trie CVarTrie;
-
-extern std::unique_ptr<Trie> g_pCVarTrie;
-
-void InitCVars();
-
 // Console functions must have the following signature
 typedef bool (*ConsoleFunc)( std::vector<std::string> *args);
 
 namespace CVarUtils
 {
+    ////////////////////////////////////////////////////////////////////////////////
+    // A global Trie structure holds all of the variables organized by their string
+    // name.  He lives in Trie.cpp.
+    Trie& TrieInstance();
+
     ////////////////////////////////////////////////////////////////////////////////
 	template <typename T>
 	class CVarRef
@@ -330,13 +326,6 @@ namespace CVarUtils {
                   std::ostream& (*pSerialisationFuncPtr)( std::ostream &, T ) = NULL,
                   std::istream& (*pDeserialisationFuncPtr)( std::istream &, T ) = NULL ) {
 
-                if( g_pCVarTrie.get() == NULL ){
-                    InitCVars();
-                }
-                if( g_pCVarTrie->Exists( sVarName ) ) {
-                    throw CVarUtils::CVarAlreadyCreated;
-                }
-
                 //std::cout << TToStream( std::cout, TVarValue );
                 m_pValueStringFuncPtr = CVarValueString; // template pointer to value string func
                 m_pTypeStringFuncPtr = CVarTypeString; // template pointer to type string func
@@ -438,10 +427,9 @@ namespace CVarUtils {
             std::istream& (*pDeserialisationFuncPtr)( std::istream &, T )
             )
     {
-        if( g_pCVarTrie.get() == NULL ){
-            InitCVars();
-        }
-        if( g_pCVarTrie.get()->Exists( s ) ) {
+        Trie& trie = TrieInstance();
+
+        if( trie.Exists( s ) ) {
             throw CVarAlreadyCreated;
         }
         if( std::string( s ) == "true" ||
@@ -454,7 +442,7 @@ namespace CVarUtils {
 #endif
         CVarUtils::CVar<T> *pCVar = new CVarUtils::CVar<T>(
                 s, val, sHelp, true, pSerialisationFuncPtr, pDeserialisationFuncPtr );
-        g_pCVarTrie->Insert( s, (void *) pCVar );
+        trie.Insert( s, (void *) pCVar );
         return *(pCVar->m_pVarData);
     }
 
@@ -515,10 +503,9 @@ namespace CVarUtils {
             std::istream& (*pDeserialisationFuncPtr)( std::istream &, T )
             )
     {
-        if( g_pCVarTrie.get() == NULL ){
-            InitCVars();
-        }
-        if( g_pCVarTrie.get()->Exists( s ) ) {
+        Trie& trie = TrieInstance();
+
+        if( trie.Exists( s ) ) {
             throw CVarAlreadyCreated;
         }
         if( std::string( s ) == "true" ||
@@ -530,7 +517,7 @@ namespace CVarUtils {
         printf( "Creating variable: %s.\n", s  );
 #endif
         CVarUtils::CVar<T> *pCVar = new CVarUtils::CVar<T>( s, val, sHelp, false, pSerialisationFuncPtr, pDeserialisationFuncPtr );
-        g_pCVarTrie->Insert( s, (void *) pCVar );
+        trie.Insert( s, (void *) pCVar );
         return *(pCVar->m_pVarData);
     }
 
@@ -545,13 +532,12 @@ namespace CVarUtils {
 
    ////////////////////////////////////////////////////////////////////////////////
     template <class T> T& GetCVarRef( const char* s ) {
-        if( g_pCVarTrie.get() == NULL ){
-            InitCVars();
-        }
-        if( !g_pCVarTrie.get()->Exists( s ) ) {
+        Trie& trie = TrieInstance();
+
+        if( !trie.Exists( s ) ) {
             throw CVarNonExistant;
         }
-        return *(((CVar<T>*)g_pCVarTrie.get()->Find(s)->m_pNodeData)->m_pVarData);
+        return *(((CVar<T>*)trie.Find(s)->m_pNodeData)->m_pVarData);
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -571,30 +557,27 @@ namespace CVarUtils {
 
     ////////////////////////////////////////////////////////////////////////////////
     inline bool CVarExists( std::string s ){
-        return g_pCVarTrie->Exists( s );
+        return TrieInstance().Exists( s );
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     inline std::string GetCVarString( std::string s ) {
-        if( g_pCVarTrie.get() == NULL ){
-            InitCVars();
-        }
-        if( !g_pCVarTrie.get()->Exists( s ) ) {
+        Trie& trie = TrieInstance();
+
+        if( !trie.Exists( s ) ) {
             throw CVarNonExistant;
         }
         return
-            ((CVar<int>*)g_pCVarTrie.get()->Find(s)->m_pNodeData)->GetValueAsString();
+            ((CVar<int>*)trie.Find(s)->m_pNodeData)->GetValueAsString();
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     template <class T> void SetCVar( const char* s, T val ) {
-        if( g_pCVarTrie.get() == NULL ){
-            InitCVars();
-        }
-        if( !g_pCVarTrie.get()->Exists( s ) ) {
+        Trie& trie = TrieInstance();
+        if( !trie.Exists( s ) ) {
             throw CVarNonExistant;
         }
-        *(((CVar<T>*)g_pCVarTrie.get()->Find(s)->m_pNodeData)->m_pVarData) = val;
+        *(((CVar<T>*)trie.Find(s)->m_pNodeData)->m_pVarData) = val;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -604,13 +587,11 @@ namespace CVarUtils {
 
     ////////////////////////////////////////////////////////////////////////////////
     inline const std::string& GetHelp( const char* s ) {
-        if( g_pCVarTrie.get() == NULL ){
-            InitCVars();
-        }
-        if( !g_pCVarTrie.get()->Exists( s ) ) {
+        Trie& trie = TrieInstance();
+        if( !trie.Exists( s ) ) {
             throw CVarNonExistant;
         }
-        return ((CVar<int>*)g_pCVarTrie.get()->Find(s)->m_pNodeData)->GetHelp();
+        return ((CVar<int>*)trie.Find(s)->m_pNodeData)->GetHelp();
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -636,13 +617,14 @@ namespace CVarUtils {
             const char* sCellEndTag = ""
             )
     {
-        TrieNode* node = g_pCVarTrie->FindSubStr("");
+        Trie& trie = TrieInstance();
+        TrieNode* node = trie.FindSubStr("");
         if( !node ) {
             return;
         }
         std::cout << "CVars:" << std::endl;
         // Retrieve suggestions (retrieve all leaves by traversing from current node)
-        std::vector<TrieNode*> suggest = g_pCVarTrie->CollectAllNodes( node );
+        std::vector<TrieNode*> suggest = trie.CollectAllNodes( node );
         std::sort( suggest.begin(), suggest.end() );
         //output suggestions
         unsigned int nLongestName = 0;
@@ -680,16 +662,17 @@ namespace CVarUtils {
     ////////////////////////////////////////////////////////////////////////////////
     inline void SetStreamType( const CVARS_STREAM_TYPE& stream_type )
     {
-        g_pCVarTrie->SetStreamType( stream_type );
+        TrieInstance().SetStreamType( stream_type );
     }
 
     ////////////////////////////////////////////////////////////////////////////////
     inline bool Save( const std::string& sFileName, std::vector<std::string> vAcceptedSubstrings ) {
         std::ofstream sOut( sFileName.c_str() );
+        Trie& trie = TrieInstance();
         if( sOut.is_open() ) {
-            g_pCVarTrie->SetVerbose( false );
-            g_pCVarTrie->SetAcceptedSubstrings ( vAcceptedSubstrings );
-            sOut << *g_pCVarTrie;
+            trie.SetVerbose( false );
+            trie.SetAcceptedSubstrings ( vAcceptedSubstrings );
+            sOut << trie;
             sOut.close();
             return true;
         }
@@ -702,10 +685,11 @@ namespace CVarUtils {
     ////////////////////////////////////////////////////////////////////////////////
     inline bool Load( const std::string& sFileName, std::vector<std::string> vAcceptedSubstrings ) {
         std::ifstream sIn( sFileName.c_str() );
+        Trie& trie = TrieInstance();
         if( sIn.is_open() ) {
-            g_pCVarTrie->SetVerbose( false );
-            g_pCVarTrie->SetAcceptedSubstrings ( vAcceptedSubstrings );
-            sIn >> *g_pCVarTrie;
+            trie.SetVerbose( false );
+            trie.SetAcceptedSubstrings ( vAcceptedSubstrings );
+            sIn >> trie;
             sIn.close();
             return true;
         }

@@ -1521,7 +1521,8 @@ inline int GLConsole::_FindRecursionLevel( std::string sCommand )
 ////////////////////////////////////////////////////////////////////////////////
 void GLConsole::PrintAllCVars()
 {
-    TrieNode* node = g_pCVarTrie->FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
+    Trie& trie = CVarUtils::TrieInstance();
+    TrieNode* node = trie.FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
     if( !node ) {
         return;
     }
@@ -1529,7 +1530,7 @@ void GLConsole::PrintAllCVars()
     std::cout << "CVars:" << std::endl;
 
     // Retrieve suggestions (retrieve all leaves by traversing from current node)
-    std::vector<TrieNode*> suggest = g_pCVarTrie->CollectAllNodes( node );
+    std::vector<TrieNode*> suggest = trie.CollectAllNodes( node );
     std::sort( suggest.begin(), suggest.end() );
     //output suggestions
     unsigned int nLongestName = 0;
@@ -1561,13 +1562,14 @@ void GLConsole::PrintAllCVars()
 ////////////////////////////////////////////////////////////////////////////////
 inline void GLConsole::_TabComplete()
 {
-    TrieNode* node = g_pCVarTrie->FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
+    Trie& trie = CVarUtils::TrieInstance();
+    TrieNode* node = trie.FindSubStr(  RemoveSpaces( m_sCurrentCommandBeg ) );
     if( !node ) {
         // Attempt to strip away '=' so that the value can be re-completed
         const size_t nEquals = m_sCurrentCommandBeg.rfind( "=" );
         if(nEquals != m_sCurrentCommandBeg.npos) {
             std::string sCommandStripEq = m_sCurrentCommandBeg.substr( 0, nEquals );
-            node = g_pCVarTrie->FindSubStr( RemoveSpaces( sCommandStripEq ) );
+            node = trie.FindSubStr( RemoveSpaces( sCommandStripEq ) );
             if( node != NULL ) { m_sCurrentCommandBeg = sCommandStripEq; }
         }
     }
@@ -1575,13 +1577,13 @@ inline void GLConsole::_TabComplete()
         return;
     }
     else if( node->m_nNodeType == TRIE_LEAF || (node->m_children.size() == 0) ) {
-        node = g_pCVarTrie->Find(m_sCurrentCommandBeg);
+        node = trie.Find(m_sCurrentCommandBeg);
         if( !_IsConsoleFunc( node ) ) {
             m_sCurrentCommandBeg += " = " + CVarUtils::GetValueAsString(node->m_pNodeData);
         }
     } else {
         // Retrieve suggestions (retrieve all leaves by traversing from current node)
-        std::vector<TrieNode*> suggest = g_pCVarTrie->CollectAllNodes(node);
+        std::vector<TrieNode*> suggest = trie.CollectAllNodes(node);
         //output suggestions
         if( suggest.size() > 1) {
             std::vector<std::pair<std::string,int> > suggest_name_index_full;
@@ -1709,6 +1711,7 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
     std::string sRes;
     bool bSuccess = true;
 
+    Trie& trie = CVarUtils::TrieInstance();
     std::string m_sCurrentCommand = m_sCurrentCommandBeg+m_sCurrentCommandEnd;
 
     // remove leading and trailing spaces
@@ -1727,7 +1730,7 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
     }
 
     // Simply print value if the command is just a variable
-    if( ( node = g_pCVarTrie->Find( m_sCurrentCommand ) ) ) {
+    if( ( node = trie.Find( m_sCurrentCommand ) ) ) {
         //execute function if this is a function cvar
         if( _IsConsoleFunc( node ) ) {
             bSuccess &= CVarUtils::ExecuteFunction( m_sCurrentCommand, (CVarUtils::CVar<ConsoleFunc>*) node->m_pNodeData, sRes, bExecute );
@@ -1749,7 +1752,7 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
             value = m_sCurrentCommand.substr( eq_pos+1, m_sCurrentCommand.length() );
             if( !value.empty() ) {
                 value = RemoveSpaces( value );
-                if( ( node = g_pCVarTrie->Find(command) ) ) {
+                if( ( node = trie.Find(command) ) ) {
                     if( bExecute ) {
                         CVarUtils::SetValueFromString( node->m_pNodeData, value );
                     }
@@ -1767,10 +1770,9 @@ inline bool GLConsole::_ProcessCurrentCommand( bool bExecute )
         //check if this is a function
         else if( ( eq_pos = m_sCurrentCommand.find(" ") ) != -1 ) {
             std::string function;
-            std::string args;
             function = m_sCurrentCommand.substr( 0, eq_pos );
             //check if this is a valid function name
-            if( ( node = g_pCVarTrie->Find( function ) ) && _IsConsoleFunc( node ) ) {
+            if( ( node = trie.Find( function ) ) && _IsConsoleFunc( node ) ) {
                 bSuccess &= CVarUtils::ExecuteFunction( m_sCurrentCommand, (CVarUtils::CVar<ConsoleFunc>*)node->m_pNodeData, sRes, bExecute );
                 EnterLogLine( m_sCurrentCommand.c_str(), LINEPROP_FUNCTION );
             }

@@ -28,26 +28,29 @@ Trie::Trie() : root( NULL ), m_bVerbose( false ), m_StreamType( CVARS_XML_STREAM
 ////////////////////////////////////////////////////////////////////////////////
 void Trie::Init()
 {
-    root = new TrieNode( TRIE_ROOT );
+    if(!root)
+    {
+        root = new TrieNode( TRIE_ROOT );
 
-    std::string sVarName;
+        std::string sVarName;
 
-    //////
-    sVarName = "console.VerbosePaddingWidth";
-    CVarUtils::CVar<int> *pCVar1 = new CVarUtils::CVar<int>( sVarName, 30 );
-    m_pVerboseCVarNamePaddingWidth = pCVar1->m_pVarData;
-    Insert( sVarName, (void *) pCVar1 );
-    //////
-    sVarName = "console.CVarIndent";
-    CVarUtils::CVar<int> *pCVar2 = new CVarUtils::CVar<int>( sVarName, 0 );
-    m_pVerboseCVarNamePaddingWidth = pCVar2->m_pVarData;
-    Insert( sVarName, (void *) pCVar2 );
-    //////
-    sVarName = "console.CVarIndentIncr";
-    CVarUtils::CVar<int> *pCVar3 = new CVarUtils::CVar<int>( sVarName, 4 );
-    m_pVerboseCVarNamePaddingWidth = pCVar3->m_pVarData;
-    Insert( sVarName, (void *) pCVar3 );
-    //////
+        //////
+        sVarName = "console.VerbosePaddingWidth";
+        CVarUtils::CVar<int> *pCVar1 = new CVarUtils::CVar<int>( sVarName, 30 );
+        m_pVerboseCVarNamePaddingWidth = pCVar1->m_pVarData;
+        Insert( sVarName, (void *) pCVar1 );
+        //////
+        sVarName = "console.CVarIndent";
+        CVarUtils::CVar<int> *pCVar2 = new CVarUtils::CVar<int>( sVarName, 0 );
+        m_pVerboseCVarNamePaddingWidth = pCVar2->m_pVarData;
+        Insert( sVarName, (void *) pCVar2 );
+        //////
+        sVarName = "console.CVarIndentIncr";
+        CVarUtils::CVar<int> *pCVar3 = new CVarUtils::CVar<int>( sVarName, 4 );
+        m_pVerboseCVarNamePaddingWidth = pCVar3->m_pVarData;
+        Insert( sVarName, (void *) pCVar3 );
+        //////
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
