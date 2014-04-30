@@ -38,11 +38,3 @@ INSTALL( TARGETS cvars
 INSTALL( FILES ${HDRS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/CVars )
 
 
-##############################################################################
-# These lines make CVARS_LIBRARY visable so we can add them to
-# CVARSConfig.cmake in the top level CmakeLists.txt  
-GET_TARGET_PROPERTY( CVARS_LIBRARY cvars LOCATION )
-SET( CVARS_LIBRARY ${CVARS_LIBRARY} PARENT_SCOPE )
-MARK_AS_ADVANCED( CVARS_LIBRARY )
-
-
