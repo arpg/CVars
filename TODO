@@ -4,15 +4,11 @@
 - Save data using XML.    DONE -- GTS /09 
 - Separate GLConsole from the CVars.    DONE -- GTS /09 
 - Add text-based console
-
 - Scrolling up limit
 - Multiple script files and recursion
 - Tab on space
 - Tab on file names in dir
 - Better filename handling. trim spaces and illegal characters
 - Stop users creating cvars that start with console. or script.
-
 - Documentation and commenting of files
-- Complete the demo apps
-- Remove the dev demo app before 1st release
 
