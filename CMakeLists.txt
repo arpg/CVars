@@ -90,6 +90,7 @@ include( install_package )
 install_package(
     PKG_NAME cvars
     LIB_NAME cvars
+    VERSION ${VERSION}
     DESCRIPTION "Library for runtime variable editing for fast prototyping."
     INSTALL_HEADERS CVars/CVarVersion.h CVars/cvars_tinyxml.h CVars/CVar.h
                     CVars/CVarVectorIO.h CVars/CVarMapIO.h CVars/Timestamp.h
@@ -98,6 +99,10 @@ install_package(
     LINK_LIBS cvars
     )
 
+# make an uninstall target
+include(${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in)
+add_custom_target(uninstall
+    COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
 ## Figure out the relative path from the installed Config.cmake file to the
 ## install prefix. This relative path will be configured into CVARSConfig.cmake.
