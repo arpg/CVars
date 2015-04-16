@@ -99,7 +99,6 @@ install_package(
     #                CVars/CVarVectorIO.h CVars/CVarMapIO.h CVars/Timestamp.h
     #                CVars/Trie.h CVars/TrieNode.h
     DESTINATION  ${CMAKE_INSTALL_PREFIX}
-    LINK_LIBS CVars
     )
 
 # make an uninstall target
