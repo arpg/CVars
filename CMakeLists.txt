@@ -13,7 +13,8 @@ list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules )
 include( install_package )
 
 # Set version values in CVarVersion.h  (see CVarVersion.h.in)
-configure_file( CVars/CVarVersion.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/CVars/CVarVersion.h IMMEDIATE )
+configure_file( CVars/CVarVersion.h.in ${CMAKE_CURRENT_BINARY_DIR}/CVars/CVarVersion.h IMMEDIATE )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 
 ###############################################################################
