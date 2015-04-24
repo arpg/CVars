@@ -13,7 +13,7 @@ list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules )
 include( install_package )
 
 # Set version values in CVarVersion.h  (see CVarVersion.h.in)
-configure_file( CVars/CVarVersion.h.in ${CMAKE_CURRENT_BINARY_DIR}/CVars/CVarVersion.h IMMEDIATE )
+configure_file( include/CVars/CVarVersion.h.in ${CMAKE_CURRENT_BINARY_DIR}/CVars/CVarVersion.h IMMEDIATE )
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 
@@ -35,31 +35,31 @@ ENDIF( NOT MSVC )
 IF(WIN32)
 	SET(WIN32 1)
 ENDIF(WIN32)
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include )
 set( CVAR_SRCS
-    CVars/cvars_tinyxml.cpp
-    CVars/cvars_tinyxmlerror.cpp
-    CVars/cvars_tinyxmlparser.cpp
-    CVars/CVar.cpp
-    CVars/CVarParse.cpp
-    CVars/Timestamp.cpp
-    CVars/Trie.cpp
-    CVars/TrieNode.cpp
+    src/cvars_tinyxml.cpp
+    src/cvars_tinyxmlerror.cpp
+    src/cvars_tinyxmlparser.cpp
+    src/CVar.cpp
+    src/CVarParse.cpp
+    src/Timestamp.cpp
+    src/Trie.cpp
+    src/TrieNode.cpp
    )
 
 set( CVAR_HDRS
-    CVars/CVarVersion.h
-    CVars/cvars_tinyxml.h
-    CVars/CVar.h
-    CVars/CVarVectorIO.h
-    CVars/CVarMapIO.h
-    CVars/Timestamp.h
-    CVars/Trie.h
-    CVars/TrieNode.h
+    include/CVars/CVarVersion.h
+    include/CVars/cvars_tinyxml.h
+    include/CVars/CVar.h
+    include/CVars/CVarVectorIO.h
+    include/CVars/CVarMapIO.h
+    include/CVars/Timestamp.h
+    include/CVars/Trie.h
+    include/CVars/TrieNode.h
   )
 
 add_definitions( -DTIXML_USE_STL )
-add_library( cvars ${CVAR_SRCS} ${CVAR_HDRS} )
+add_library( cvars ${CVAR_SRCS}) #${CVAR_HDRS} )
 
 ###############################################################################
 set( BUILD_GLCONSOLE_DEMO CACHE BOOL OFF )
@@ -70,18 +70,18 @@ endif()
 ###############################################################################
 # Headers for GLConsole
 set( GLCONSOLE_HEADERS
-        GLConsole/GLFont.h
-        GLConsole/GLColor.h
-        GLConsole/GLConsole.h
-        GLConsole/GLConsoleFunction.h
+        include/GLConsole/GLFont.h
+        include/GLConsole/GLColor.h
+        include/GLConsole/GLConsole.h
+        include/GLConsole/GLConsoleFunction.h
    )
 #install( FILES ${GLCONSOLE_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/GLConsole )
 
 ###############################################################################
 # Headers for FLConsole
 set( FLCONSOLE_HEADERS
-        FLConsole/FLConsole.h
-        FLConsole/FLConsoleFunction.h
+        include/FLConsole/FLConsole.h
+        include/FLConsole/FLConsoleFunction.h
    )
 #install( FILES ${FLCONSOLE_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/FLConsole )
 
@@ -92,14 +92,9 @@ install_package(
     LIB_NAME cvars
     VERSION ${VERSION}
     DESCRIPTION "Library for runtime variable editing for fast prototyping."
-    INSTALL_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/CVars
-                        ${CMAKE_CURRENT_SOURCE_DIR}/GLConsole
-                        ${CMAKE_CURRENT_SOURCE_DIR}/FLConsole
-    #INSTALL_HEADERS CVars/CVarVersion.h CVars/cvars_tinyxml.h CVars/CVar.h
-    #                CVars/CVarVectorIO.h CVars/CVarMapIO.h CVars/Timestamp.h
-    #                CVars/Trie.h CVars/TrieNode.h
+    INSTALL_INCLUDE_DIR true
+    INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
     DESTINATION ${CMAKE_INSTALL_PREFIX}
-    #LINK_LIBS cvars
     )
 
 # make an uninstall target
