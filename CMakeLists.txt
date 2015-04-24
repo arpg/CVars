@@ -92,8 +92,7 @@ install_package(
     LIB_NAME cvars
     VERSION ${VERSION}
     DESCRIPTION "Library for runtime variable editing for fast prototyping."
-    INSTALL_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-                        ${CMAKE_CURRENT_SOURCE_DIR}/CVars
+    INSTALL_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/CVars
                         ${CMAKE_CURRENT_SOURCE_DIR}/GLConsole
                         ${CMAKE_CURRENT_SOURCE_DIR}/FLConsole
     #INSTALL_HEADERS CVars/CVarVersion.h CVars/cvars_tinyxml.h CVars/CVar.h

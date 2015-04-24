@@ -116,7 +116,7 @@ function(install_package)
             foreach(dir IN LISTS PACKAGE_INSTALL_HEADER_DIRS )
             install( DIRECTORY ${dir}
                 DESTINATION ${PACKAGE_DESTINATION}/include 
-                FILES_MATCHING PATTERN "*.h"
+                FILES_MATCHING PATTERN "*.h|*.hxx|*.hpp"
                 )
             endforeach()
         endif()
