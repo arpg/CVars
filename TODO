@@ -1,18 +1,12 @@
 - Remove dependency from GLUT (for example by including GPLed code from freeglut?).    DONE for CVars, not a problem really for GLConsole -- GTS /09
 - Add "hidden" variables and functions to avoid bloating the interface
 - Pipe command line functions to the background (in particular "cp", "pwd", "ls")
-- Save data using XML.    DONE -- GTS /09 
-- Separate GLConsole from the CVars.    DONE -- GTS /09 
 - Add text-based console
-
 - Scrolling up limit
 - Multiple script files and recursion
 - Tab on space
 - Tab on file names in dir
 - Better filename handling. trim spaces and illegal characters
 - Stop users creating cvars that start with console. or script.
-
 - Documentation and commenting of files
-- Complete the demo apps
-- Remove the dev demo app before 1st release
 
