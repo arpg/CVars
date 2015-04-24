@@ -13,8 +13,8 @@ list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules )
 include( install_package )
 
 # Set version values in CVarVersion.h  (see CVarVersion.h.in)
-configure_file( include/CVars/CVarVersion.h.in ${CMAKE_CURRENT_BINARY_DIR}/CVars/CVarVersion.h IMMEDIATE )
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
+configure_file( src/CVarVersion.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/CVars/CVarVersion.h IMMEDIATE )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR}/include )
 
 
 ###############################################################################
@@ -93,6 +93,7 @@ install_package(
     VERSION ${VERSION}
     DESCRIPTION "Library for runtime variable editing for fast prototyping."
     INSTALL_INCLUDE_DIR true
+    INSTALL_GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/include/CVars/CVarVersion.h
     INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     )

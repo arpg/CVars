@@ -35,6 +35,7 @@ function(install_package)
       VERSION
       DESCRIPTION
       INSTALL_HEADERS 
+      INSTALL_GENERATED_HEADERS 
       INSTALL_HEADER_DIRS
       INSTALL_INCLUDE_DIR
       DESTINATION
@@ -124,6 +125,15 @@ function(install_package)
         # install header files
         if( PACKAGE_INSTALL_HEADERS )
             install( FILES ${PACKAGE_INSTALL_HEADERS} DESTINATION ${PACKAGE_DESTINATION} )
+        endif()
+        if( PACKAGE_INSTALL_GENERATED_HEADERS )
+          foreach(hdr IN LISTS PACKAGE_INSTALL_GENERATED_HEADERS )
+             get_filename_component( _fp ${hdr} ABSOLUTE )
+             file( RELATIVE_PATH _rpath ${CMAKE_BINARY_DIR} ${_fp} )
+             get_filename_component( _dir ${_rpath} DIRECTORY )
+             install( FILES ${_fp}
+                 DESTINATION ${PACKAGE_DESTINATION}/${_dir} )
+         endforeach()
         endif()
 
         if( PACKAGE_INSTALL_INCLUDE_DIR )
