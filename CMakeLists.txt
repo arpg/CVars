@@ -75,7 +75,6 @@ set( GLCONSOLE_HEADERS
         include/GLConsole/GLConsole.h
         include/GLConsole/GLConsoleFunction.h
    )
-#install( FILES ${GLCONSOLE_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/GLConsole )
 
 ###############################################################################
 # Headers for FLConsole
@@ -83,8 +82,6 @@ set( FLCONSOLE_HEADERS
         include/FLConsole/FLConsole.h
         include/FLConsole/FLConsoleFunction.h
    )
-#install( FILES ${FLCONSOLE_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/FLConsole )
-
 
 ##############################################################################
 install_package(
@@ -92,9 +89,8 @@ install_package(
     LIB_NAME cvars
     VERSION ${VERSION}
     DESCRIPTION "Library for runtime variable editing for fast prototyping."
-    INSTALL_INCLUDE_DIR true
+    INSTALL_HEADERS ${FLCONSOLE_HEADERS} ${GLCONSOLE_HEADERS} ${CVAR_HDRS}
     INSTALL_GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/include/CVars/CVarVersion.h
-    INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     )
 
