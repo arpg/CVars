@@ -89,7 +89,7 @@ install_package(
     LIB_NAME cvars
     VERSION ${VERSION}
     DESCRIPTION "Library for runtime variable editing for fast prototyping."
-    INSTALL_HEADERS ${FLCONSOLE_HEADERS} ${GLCONSOLE_HEADERS} ${CVAR_HDRS}
+    INSTALL_INCLUDE_DIR true
     INSTALL_GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/include/CVars/CVarVersion.h
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     )
