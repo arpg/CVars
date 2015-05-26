@@ -48,6 +48,13 @@ else()
         list(APPEND LINK_LIBS "${GLEW_LIBRARY}" )
         set(HAVE_GLEW 1)
     endif()
+
+    find_package(FREEGLUT QUIET)
+    if(FREEGLUT_FOUND)
+        list(APPEND USER_INC "${FREEGLUT_INCLUDE_DIR}")
+        list(APPEND LINK_LIBS "${FREEGLUT_LIBRARY}")
+        set(HAVE_FREEGLUT 1)
+    endif()
 endif()
 
 if( HAVE_GLES_2 )

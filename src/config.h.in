@@ -23,5 +23,6 @@
 #cmakedefine HAVE_APPLE_OPENGL_FRAMEWORK
 #cmakedefine HAVE_GLEW
 #cmakedefine HAVE_GLES
+#cmakedefine HAVE_FREEGLUT
 
 #endif //_CVARS_CONFIG_H_
