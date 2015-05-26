@@ -54,6 +54,10 @@ else()
         list(APPEND USER_INC "${FREEGLUT_INCLUDE_DIR}")
         list(APPEND LINK_LIBS "${FREEGLUT_LIBRARY}")
         set(HAVE_FREEGLUT 1)
+        if(APPLE)
+            message(STATUS "Be sure to have FreeGLUT installed if you have
+            XQuartz installed.")
+        endif(APPLE)
     endif()
 endif()
 
