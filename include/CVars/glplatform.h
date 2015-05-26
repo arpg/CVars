@@ -35,6 +35,7 @@
 
 #ifdef HAVE_GLEW
     #include <GL/glew.h>
+    #include <GL/glut.h>
 #endif
 
 #ifdef HAVE_GLES
@@ -54,7 +55,11 @@
     #endif
 #else
     #ifdef _OSX_
-        #include <OpenGL/gl.h>
+        #ifndef HAVE_GLEW
+            #include <OpenGL/gl.h>
+            #include <OpenGL/glu.h>
+            #include <GLUT/glut.h>
+        #endif
     #else
         #include <GL/gl.h>
     #endif

@@ -12,6 +12,7 @@
 
 #include <CVars/CVar.h>
 #include <CVars/Timestamp.h>
+#include <CVars/glplatform.h>
 
 #include <GLConsole/GLFont.h>
 //#include <GLConsole/GLColor.h>
