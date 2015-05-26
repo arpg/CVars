@@ -3,19 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-#    include <OpenGL/gl.h>
-#    include <OpenGL/glu.h>
-#    include <GLUT/glut.h>
-#else
-#    ifdef WIN32
-#      include <windows.h>
-#    endif
-#    include <GL/gl.h>
-#    include <GL/glu.h> 
-#    include <GL/glut.h>
-#endif
-
+#include <CVars/glplatform.h>
 #include <GLConsole/GLConsole.h>
 
 #include <CVars/CVarVectorIO.h>

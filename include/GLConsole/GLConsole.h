@@ -334,33 +334,11 @@ class GLConsole
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-#  include <OpenGL/gl.h>
-#  include <OpenGL/glu.h>
-#  include <GLUT/glut.h>
-#else
-#  ifdef _ANDROID_
-#    include <EGL/egl.h>
-#    ifdef HAVE_GLES_2
-#      include <GLES2/gl2.h>
-#    else
-#      include <GLES/gl.h>
-#    endif // HAVE_GLES_2
-#  else
-#    ifdef WIN32
-#      include <windows.h>
-#    endif
-#    include <GL/gl.h>
-#    include <GL/glu.h>
-#    include <GL/glut.h>
-#  endif
-#endif
-
 #include <algorithm>
 #include <cstring>
 
-#include "CVars/CVar.h"
-#include "CVars/TrieNode.h"
+#include <CVars/CVar.h>
+#include <CVars/TrieNode.h>
 
 
 /// Include a collection of useful "ConsoleFunc" functiions:

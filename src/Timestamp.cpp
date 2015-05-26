@@ -11,24 +11,25 @@
 #include <time.h>
 #include <iostream>
 #include <stdio.h>
+#include <CVars/config.h>
 
-#ifdef WIN32
+#ifdef _WIN_
 #    include <windows.h>
 #endif
 
-#include "CVars/Timestamp.h"
+#include <CVars/Timestamp.h>
 
 TimeStamp::TimeStamp()
 {
 	start = 1;
 	overflow = 0;
 
-	#ifdef WIN32
+	#ifdef _WIN_
 	isPaused = false;
 	#endif
 }
 
-#ifndef WIN32
+#ifndef _WIN_
 void TimeStamp::Stamp()
 {
     gettimeofday(&prevTime, &tz);
@@ -41,7 +42,7 @@ void TimeStamp::Stamp()
 }
 #endif
 
-#ifdef WIN32
+#ifdef _WIN_
 void TimeStamp::Stamp()
 {
 	if(isPaused)
@@ -61,7 +62,7 @@ void TimeStamp::Stamp()
 }
 #endif
 
-#ifndef WIN32
+#ifndef _WIN_
 double TimeStamp::TotalElapsed()
 {
 	if(start == 1)
@@ -81,7 +82,7 @@ double TimeStamp::TotalElapsed()
 }
 #endif
 
-#ifdef WIN32
+#ifdef _WIN_
 double TimeStamp::TotalElapsed()
 {
 	if(start == 1)
@@ -100,7 +101,7 @@ double TimeStamp::TotalElapsed()
 }
 #endif
 
-#ifndef WIN32
+#ifndef _WIN_
 //returns very precise time in seconds since last "stamp"
 double TimeStamp::Elapsed() 
 {
@@ -122,7 +123,7 @@ double TimeStamp::Elapsed()
 }
 #endif
 
-#ifdef WIN32
+#ifdef _WIN_
 double TimeStamp::Elapsed() 
 {
 	if(start == 1)
@@ -167,7 +168,7 @@ int TimeStamp::ElapsedFrames(double frameTime, double factor)
   return result;
 }
 
-#ifdef WIN32
+#ifdef _WIN_
 //allow timer to be pauses in between "stamps"
 void TimeStamp::Pause()
 {

@@ -37,7 +37,7 @@
 #include <algorithm>
 #include <memory>
 
-#include <CVars/CVarVersion.h>
+#include <CVars/glplatform.h>
 #include <CVars/Trie.h>
 #include <CVars/TrieNode.h>
 #include <CVars/CVarVectorIO.h>
