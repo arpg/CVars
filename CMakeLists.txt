@@ -11,54 +11,54 @@ project( CVars )
 # Add to module path, so we can find our cmake modules
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules )
 include( install_package )
-include(SetPlatformVars)
+include( SetPlatformVars )
+include( CheckCXXSourceRuns )
 
 # Properly source GL headers.
-if(ANDROID OR IOS)
-    set(HAVE_GLES 1)
-    option(BUILD_FOR_GLES_2 "Build for OpenGL ES 2 instead of ES 1" ON )
-    if(BUILD_FOR_GLES_2)
-        set(HAVE_GLES_2 1)
-    endif()
+find_package(OpenGL REQUIRED QUIET)
+list(APPEND USER_INC  "${OPENGL_INCLUDE_DIR}" )
+list(APPEND LINK_LIBS "${OPENGL_LIBRARIES}" )
+
+find_package(GLEW REQUIRED QUIET)
+if(GLEW_FOUND)
+    list(APPEND USER_INC  "${GLEW_INCLUDE_DIR}" )
+    list(APPEND LINK_LIBS "${GLEW_LIBRARY}" )
+    set(HAVE_GLEW 1)
 endif()
 
-if( ANDROID  )
-    # Android specific display code
-    list(APPEND HEADERS ${INCDIR}/display_android.h )
-    list(APPEND SOURCES ${SRCDIR}/display_android.cpp )
+find_package(FREEGLUT QUIET)
+find_package(GLUT QUIET)
 
-    if(HAVE_GLES_2)
-        list(APPEND LINK_LIBS "-lEGL;-lGLESv2" )
-    else()
-        list(APPEND LINK_LIBS "-lEGL;-lGLESv1_CM" )
-    endif()
-elseif( IOS )
-    list(APPEND LINK_LIBS "-framework OpenGLES" )
-    list(APPEND IOS_HEADERS "${INCDIR}/ios/PangolinAppDelegate.h" "${INCDIR}/ios/PangolinViewController.h" )
-    list(APPEND SOURCES ${SRCDIR}/ios/PangolinAppDelegate.mm
-        ${SRCDIR}/ios/PangolinViewController.mm )
-else()
-    find_package(OpenGL REQUIRED QUIET)
-    list(APPEND USER_INC  "${OPENGL_INCLUDE_DIR}" )
-    list(APPEND LINK_LIBS "${OPENGL_LIBRARIES}" )
+# Custom check for Modified OSX GLUT.
+if(_OSX_)
+  set(CMAKE_REQUIRED_LIBRARIES ${GLUT_LIBRARY})
+  CHECK_CXX_SOURCE_RUNS("#include <GLUT/glut.h>\n int main () {return glutGetProcAddress(\"glutScrollFunc\")     ? 0 : -1;};" HAVE_MODIFIED_OSXGLUT)
+  if(NOT HAVE_MODIFIED_OSXGLUT)
+        message(STATUS "Install modified osxglut for smooth scroll support / pinch / zoom.")
+        message(STATUS "(https://github.com/stevenlovegrove/osxglut)")
+  endif()
+endif(_OSX_)
 
-    find_package(GLEW REQUIRED QUIET)
-    if(GLEW_FOUND)
-        list(APPEND USER_INC  "${GLEW_INCLUDE_DIR}" )
-        list(APPEND LINK_LIBS "${GLEW_LIBRARY}" )
-        set(HAVE_GLEW 1)
+# Prefer OSX_MODIFIED_GLUT > FREEGLUT > GLUT
+if(FREEGLUT_FOUND AND NOT HAVE_MODIFIED_OSXGLUT)
+  set(HAVE_FREEGLUT 1)
+  list(APPEND USER_INC  ${FREEGLUT_INCLUDE_DIR} )
+  list(APPEND LINK_LIBS ${FREEGLUT_LIBRARY} )
+elseif(GLUT_FOUND)
+  list(APPEND USER_INC  ${GLUT_INCLUDE_DIR} )
+  list(APPEND LINK_LIBS ${GLUT_LIBRARY} )
+  if(_OSX_)
+    set(HAVE_APPLE_OPENGL_FRAMEWORK 1)
+    list(APPEND LINK_LIBS "-framework GLUT" )
+    if(NOT HAVE_MODIFIED_OSXGLUT)
+        message(STATUS "Using Apple Framework GLUT.")
+        message(STATUS "Install Freeglut or modified osxglut for scroll support.")
     endif()
-
-    find_package(FREEGLUT QUIET)
-    if(FREEGLUT_FOUND)
-        list(APPEND USER_INC "${FREEGLUT_INCLUDE_DIR}")
-        list(APPEND LINK_LIBS "${FREEGLUT_LIBRARY}")
-        set(HAVE_FREEGLUT 1)
-        if(APPLE)
-            message(STATUS "Be sure to have FreeGLUT installed if you have
-            XQuartz installed.")
-        endif(APPLE)
-    endif()
+  endif()
+  if(FREEGLUT_FOUND OR GLUT_FOUND)
+    set(HAVE_GLUT 1)
+    message(STATUS "Glut Found and Enabled")
+  endif()
 endif()
 
 if( HAVE_GLES_2 )
@@ -109,6 +109,7 @@ set( CVAR_HDRS
     include/CVars/Timestamp.h
     include/CVars/Trie.h
     include/CVars/TrieNode.h
+    include/CVars/glplatform.h
   )
 
 add_definitions( -DTIXML_USE_STL )

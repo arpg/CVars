@@ -24,5 +24,6 @@
 #cmakedefine HAVE_GLEW
 #cmakedefine HAVE_GLES
 #cmakedefine HAVE_FREEGLUT
+#cmakedefine HAVE_MODIFIED_OSXGLUT
 
 #endif //_CVARS_CONFIG_H_

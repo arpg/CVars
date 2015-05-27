@@ -54,13 +54,18 @@
     #endif
 #else
     #ifdef _OSX_
-        #ifdef HAVE_FREEGLUT
-            #include <GL/glut.h>
-        #else
-            #include <OpenGL/gl.h>
-            #include <OpenGL/glu.h>
-            #include <GLUT/glut.h>
-        #endif
+      #include <OpenGL/gl.h>
+      #ifdef HAVE_MODIFIED_OSXGLUT //prefer Modified OSX GLUT.
+        #include <OpenGL/gl.h>
+        #include <OpenGL/glu.h>
+        #include <GLUT/glut.h>
+      #elif defined HAVE_FREEGLUT
+        #include <GL/glut.h>
+      #else
+        #include <OpenGL/gl.h>
+        #include <OpenGL/glu.h>
+        #include <GLUT/glut.h>
+      #endif
     #else
         #include <GL/gl.h>
     #endif
