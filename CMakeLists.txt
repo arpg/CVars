@@ -137,7 +137,7 @@ set( FLCONSOLE_HEADERS
    )
 
 # include CVAR_HDRS in add_library so QtCreator will detect them.
-add_library( cvars ${CVAR_SRCS} ${CVAR_HDRS} ${GLCONSOLE_HEADERS}
+add_library( cvars SHARED ${CVAR_SRCS} ${CVAR_HDRS} ${GLCONSOLE_HEADERS}
  ${FLCONSOLE_HEADERS} )
 
 ##############################################################################
