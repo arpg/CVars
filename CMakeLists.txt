@@ -59,7 +59,7 @@ set( CVAR_HDRS
   )
 
 add_definitions( -DTIXML_USE_STL )
-add_library( cvars ${CVAR_SRCS}) #${CVAR_HDRS} )
+add_library( cvars SHARED ${CVAR_SRCS}) #${CVAR_HDRS} )
 
 ###############################################################################
 set( BUILD_GLCONSOLE_DEMO CACHE BOOL OFF )
