@@ -28,7 +28,7 @@ class TimeStamp
 	double TotalElapsed(); //total since first stamp
 	int ElapsedFrames(double frameTime, double factor=1.0); //given target time in millisecs per frames
 
-	#ifdef WIN32
+	#ifdef _WIN_
 	//allow timer to be pauses in between "stamps"
 	void Pause();
 	//unpause the timer...
@@ -38,7 +38,7 @@ class TimeStamp
 	private:
 	int start;
 	
-    #ifndef WIN32
+    #ifndef _WIN_
 	  struct timeval prevTime, startTime;
 	  struct timezone tz;
 	#else

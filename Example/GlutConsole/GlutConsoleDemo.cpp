@@ -13,19 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
-
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-#    include <OpenGL/gl.h>
-#    include <OpenGL/glu.h>
-#    include <GLUT/glut.h>
-#else
-#    ifdef WIN32
-#      include <windows.h>
-#    endif
-#    include <GL/gl.h>
-#    include <GL/glu.h> 
-#    include <GL/glut.h>
-#endif
+#include <CVars/glplatform.h>
 
 //include this header for CVars and GLConsole
 #include <GLConsole/GLConsole.h>

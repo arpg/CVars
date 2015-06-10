@@ -5,23 +5,10 @@
 
     $Id: GLFont.h 183 2010-07-18 15:20:20Z effer $
  */
-
 #ifndef __GL_FONT_H__
 #define __GL_FONT_H__
 
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-#    include <OpenGL/gl.h>
-#    include <OpenGL/glu.h>
-#    include <GLUT/glut.h>
-#else
-#    ifdef WIN32
-#      include <windows.h>
-#    endif
-#    include <GL/gl.h>
-#    include <GL/glu.h> 
-#    include <GL/glut.h>
-#endif
-
+#include <CVars/glplatform.h>
 
 #include <assert.h>
 #include <stdio.h>
