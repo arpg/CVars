@@ -55,7 +55,7 @@
 #else
     #ifdef _OSX_
       #include <OpenGL/gl.h>
-      #ifdef HAVE_MODIFIED_OSXGLUT //prefer Modified OSX GLUT.
+      #ifdef HAVE_APPLE_OPENGL_FRAMEWORK
         #include <OpenGL/gl.h>
         #include <OpenGL/glu.h>
         #include <GLUT/glut.h>
