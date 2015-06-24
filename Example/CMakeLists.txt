@@ -1,3 +1,3 @@
 
-SUBDIRS( FltkConsole GlutConsole )
+SUBDIRS( GlutConsole )
 
