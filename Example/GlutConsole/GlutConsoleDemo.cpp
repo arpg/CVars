@@ -6,6 +6,7 @@
  *
  *******************************************************************/
 
+#include <unistd.h>
 #include <string>
 #include <cstdio>
 #include <cmath>
