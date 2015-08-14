@@ -141,7 +141,7 @@ function(install_package)
 
         # install library itself
         if( PACKAGE_LIB_NAME )
-            install( FILES ${_target_library} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib )
+            install( TARGETS ${PACKAGE_LIB_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib )
             set( PACKAGE_LIB_LINK "-l${PACKAGE_LIB_NAME}" )
         endif()
     
