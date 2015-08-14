@@ -15,11 +15,11 @@ include( SetPlatformVars )
 include( CheckCXXSourceRuns )
 
 # Properly source GL headers.
-find_package(OpenGL REQUIRED QUIET)
+find_package(OpenGL QUIET)
 list(APPEND USER_INC  "${OPENGL_INCLUDE_DIR}" )
 list(APPEND LINK_LIBS "${OPENGL_LIBRARIES}" )
 
-find_package(GLEW REQUIRED QUIET)
+find_package(GLEW QUIET)
 if(GLEW_FOUND)
     list(APPEND USER_INC  "${GLEW_INCLUDE_DIR}" )
     list(APPEND LINK_LIBS "${GLEW_LIBRARY}" )
