@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "CVar.h"
+#include <cvars/CVar.h>
 
 class TrieNode;
 

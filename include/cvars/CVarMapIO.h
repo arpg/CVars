@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
-#include "CVars/cvars_tinyxml.h"
+#include <cvars/cvars_tinyxml.h>
 
 namespace CVarUtils {
     // All types you wish to use with CVars must overload << and >>

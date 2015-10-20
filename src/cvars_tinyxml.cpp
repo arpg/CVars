@@ -27,7 +27,7 @@ distribution.
 #include <sstream>
 #include <iostream>
 
-#include <CVars/cvars_tinyxml.h>
+#include <cvars/cvars_tinyxml.h>
 
 using namespace CVarUtils;
 

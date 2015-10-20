@@ -22,7 +22,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#include <CVars/cvars_tinyxml.h>
+#include <cvars/cvars_tinyxml.h>
 
 // The goal of the seperate error file is to make the first
 // step towards localization. tinyxml (currently) only supports
