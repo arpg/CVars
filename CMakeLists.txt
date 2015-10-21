@@ -102,9 +102,6 @@ ENDIF( NOT MSVC )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include )
 set( CVAR_SRCS
-    src/cvars_tinyxml.cpp
-    src/cvars_tinyxmlerror.cpp
-    src/cvars_tinyxmlparser.cpp
     src/CVar.cpp
     src/CVarParse.cpp
     src/Timestamp.cpp
@@ -114,7 +111,6 @@ set( CVAR_SRCS
 
 set( CVAR_HDRS
     include/cvars/config.h
-    include/cvars/cvars_tinyxml.h
     include/cvars/CVar.h
     include/cvars/CVarVectorIO.h
     include/cvars/CVarMapIO.h
