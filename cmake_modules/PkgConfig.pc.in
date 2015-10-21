@@ -6,6 +6,6 @@ includedir=${prefix}/include
 Name: @PACKAGE_PKG_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
-Cflags: @PACKAGE_CFLAGS@
+Cflags: 
 Libs: -L${libdir} @PACKAGE_LIBS@ @PACKAGE_LIB_LINK@
 
