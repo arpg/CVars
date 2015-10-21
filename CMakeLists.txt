@@ -90,9 +90,6 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR}/include )
 ###############################################################################
 # Setup compiler flags
 IF( NOT MSVC )
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} )
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-
     # Setup strict debugging environment.
     IF( "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" )
         SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -g -fno-strict-aliasing ")
