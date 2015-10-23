@@ -10,10 +10,11 @@
 
 // Trie data structure implementation.
 
-#include "CVars/CVar.h"
-#include "CVars/Trie.h"
-#include "CVars/TrieNode.h"
-#include "CVars/cvars_tinyxml.h"
+#include "cvars/CVar.h"
+#include "cvars/Trie.h"
+#include "cvars/TrieNode.h"
+
+#include <tinyxml.h>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -342,17 +343,17 @@ std::ostream &operator<<( std::ostream &stream, Trie &rTrie )
 ////////////////////////////////////////////////////////////////////////////////
 static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
 {
-    CVarUtils::TiXmlDocument doc;
+    TiXmlDocument doc;
     stream >> doc;
 
-    CVarUtils::TiXmlNode* pCVarsNode = doc.FirstChild( "cvars" );
+    TiXmlNode* pCVarsNode = doc.FirstChild( "cvars" );
 
     if( pCVarsNode == NULL ) {
         cerr <<  "ERROR: Could not find <cvars> node." << endl;
         return stream;
     }
 
-    for( CVarUtils::TiXmlNode* pNode = pCVarsNode->FirstChild();
+    for( TiXmlNode* pNode = pCVarsNode->FirstChild();
          pNode != NULL;
          pNode = pNode->NextSibling() ) {
         std::string sCVarName( pNode->Value() );
@@ -372,7 +373,7 @@ static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
         }
 
         CVarUtils::CVar<int>* pCVar = (CVarUtils::CVar<int>*)rTrie.Find( sCVarName )->m_pNodeData;
-        CVarUtils::TiXmlNode* pChild = pNode->FirstChild();
+        TiXmlNode* pChild = pNode->FirstChild();
 
         if( pCVar != NULL && pChild != NULL ) {
             std::string sCVarValue;

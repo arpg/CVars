@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
-#include "CVars/cvars_tinyxml.h"
+#include <tinyxml.h>
 
 namespace CVarUtils {
     // All types you wish to use with CVars must overload << and >>
@@ -36,17 +36,17 @@ namespace CVarUtils {
     template<class K, class D>
         std::istream &operator>>( std::istream &stream, std::map<K,D>& mMap ) {
 
-        CVarUtils::TiXmlDocument doc;
+        TiXmlDocument doc;
         stream >> doc;
         //doc.Print( stdout );
-        CVarUtils::TiXmlNode* pCVarsNode = doc.FirstChild( "map" );
+        TiXmlNode* pCVarsNode = doc.FirstChild( "map" );
 
         if( pCVarsNode == NULL ) {
             std::cerr <<  "ERROR: Could not find a <map> node." << std::endl;
             return stream;
         }
 
-        for( CVarUtils::TiXmlNode* pNode = pCVarsNode->FirstChild();
+        for( TiXmlNode* pNode = pCVarsNode->FirstChild();
              pNode != NULL;
              pNode = pNode->NextSibling() ) {
 
@@ -61,7 +61,7 @@ namespace CVarUtils {
             D DData;
 
             ////////////////////////////////////////////////////////
-            CVarUtils::TiXmlNode* pChild = pNode->FirstChild();
+            TiXmlNode* pChild = pNode->FirstChild();
             ////////////////////////////////////////////////////////
             if( pChild == NULL ) {
                 std::cerr << "ERROR parsing map, could not find first child (Key) of Object." << std::endl;
@@ -73,7 +73,7 @@ namespace CVarUtils {
                     return stream;
                 }
 
-                CVarUtils::TiXmlNode* pKeyChild = pChild->FirstChild();
+                TiXmlNode* pKeyChild = pChild->FirstChild();
 
                 if( pKeyChild == NULL ) {
                     std::cerr << "ERROR parsing key value in map (empty Key ?).\n" << std::endl;
@@ -98,7 +98,7 @@ namespace CVarUtils {
                     return stream;
                 }
 
-                CVarUtils::TiXmlNode* pDataChild = pChild->FirstChild();
+                TiXmlNode* pDataChild = pChild->FirstChild();
 
                 if( pDataChild == NULL ) {
                     std::cerr << "ERROR parsing Data value in map (empty Data ?).\n" << std::endl;

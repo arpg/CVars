@@ -37,9 +37,9 @@
 #include <algorithm>
 #include <memory>
 
-#include <CVars/Trie.h>
-#include <CVars/TrieNode.h>
-#include <CVars/CVarVectorIO.h>
+#include <cvars/Trie.h>
+#include <cvars/TrieNode.h>
+#include <cvars/CVarVectorIO.h>
 
 // Console functions must have the following signature
 typedef bool (*ConsoleFunc)( std::vector<std::string> *args);

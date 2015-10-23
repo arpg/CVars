@@ -1,7 +1,7 @@
 CVars is a small C++ library that allows run-time tweaking of C++ variables.
 
-GLConsole is a header written C++ designed to allow developers to easily add a
-'Quake-style' debugging console to their applications.  GLConsole relies on CVars.
+Within CVars, GLConsole is a header written C++ designed to allow developers to easily 
+add a 'Quake-style' debugging console to their applications.  GLConsole relies on CVars.
 
 A short list of features:
 

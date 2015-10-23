@@ -8,7 +8,7 @@
 
  */
 
-#include <CVars/CVar.h>
+#include <cvars/CVar.h>
 
 using namespace CVarUtils;
 
