@@ -6,10 +6,11 @@ Standards-Version: 3.9.5
 Section: libs
 Homepage: http://github.com/arpg/cvars
 
-Package: cvars
+Package: libcvars
+Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: CVars is a small C++ library that allows run-time tweaking of C++ variables.
+Depends: ${shlibs:Depends}, ${misc:Depends}, libtinyxml, libglew
+Description: Console-based run-time tweaking of C++ variables.
  Within CVars, GLConsole is an example that allows OpenGL developers to easily
  add a 'Quake-style' debugging console to their applications.  GLConsole relies
  on CVars.
