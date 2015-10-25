@@ -6,7 +6,7 @@ Standards-Version: 3.9.5
 Section: libs
 Homepage: http://github.com/arpg/cvars
 
-Package: libcvars-dev
+Package: cvars
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: CVars is a small C++ library that allows run-time tweaking of C++ variables.

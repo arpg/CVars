@@ -1,4 +1,4 @@
-libcvars-dev (2.6.0-0ubuntu1) vivid; urgency=low
+cvars (2.6.0-1) unstable; urgency=low
 
   * Initial release (Closes: #1234)
 
