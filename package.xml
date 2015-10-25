@@ -41,9 +41,11 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>glut</build_depend>
+  <build_depend>tinyxml</build_depend>
 
   <run_depend>catkin</run_depend>
   <run_depend>glut</run_depend>
+  <run_depend>tinyxml</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
