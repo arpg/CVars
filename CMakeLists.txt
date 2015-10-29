@@ -6,7 +6,7 @@ SET( VERSION_MINOR 6 )
 SET( VERSION_PATCH 0 )
 SET( VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH} )
 
-project( cvars )
+project( CVars )
 
 # Add to module path, so we can find our cmake modules
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules )
@@ -28,6 +28,12 @@ endif()
 
 find_package(FREEGLUT QUIET)
 find_package(GLUT QUIET)
+
+find_package(TinyXML REQUIRED)
+list(APPEND USER_INC  ${TINYXML_INCLUDE_DIRS} )
+list(APPEND LINK_LIBS ${TINYXML_LIBRARIES} )
+
+
 
 # Custom check for Modified OSX GLUT.
 if(_OSX_)
@@ -153,7 +159,7 @@ set_target_properties( cvars PROPERTIES VERSION "${VERSION}" SOVERSION "${VERSIO
 ##############################################################################
 if(NOT COMMAND catkin_package)
 install_package(
-    PKG_NAME cvars
+    PKG_NAME CVars
     LIB_NAME cvars
     VERSION ${VERSION}
     DESCRIPTION "Library for runtime variable editing for fast prototyping."
