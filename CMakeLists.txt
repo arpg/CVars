@@ -151,7 +151,9 @@ set( FLCONSOLE_HEADERS
    )
 
 # include CVAR_HDRS in add_library so QtCreator will detect them.
+include_directories( ${USER_INC} )
 add_library( cvars SHARED ${CVAR_SRCS} ${CVAR_HDRS} ${GLCONSOLE_HEADERS}
+target_link_libraries( cvars ${LINK_LIBS} )
  ${FLCONSOLE_HEADERS} )
 set_target_properties( cvars PROPERTIES VERSION "${VERSION}" SOVERSION "${VERSION}" )
 
