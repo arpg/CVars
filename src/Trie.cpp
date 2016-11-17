@@ -14,7 +14,7 @@
 #include "cvars/Trie.h"
 #include "cvars/TrieNode.h"
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -343,17 +343,17 @@ std::ostream &operator<<( std::ostream &stream, Trie &rTrie )
 ////////////////////////////////////////////////////////////////////////////////
 static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
 {
-    TiXmlDocument doc;
+    tinyxml2::XMLDocument doc;
     stream >> doc;
 
-    TiXmlNode* pCVarsNode = doc.FirstChild( "cvars" );
+    tinyxml2::XMLNode* pCVarsNode = doc.FirstChild( "cvars" );
 
     if( pCVarsNode == NULL ) {
         cerr <<  "ERROR: Could not find <cvars> node." << endl;
         return stream;
     }
 
-    for( TiXmlNode* pNode = pCVarsNode->FirstChild();
+    for( tinyxml2::XMLNode* pNode = pCVarsNode->FirstChild();
          pNode != NULL;
          pNode = pNode->NextSibling() ) {
         std::string sCVarName( pNode->Value() );
@@ -373,7 +373,7 @@ static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
         }
 
         CVarUtils::CVar<int>* pCVar = (CVarUtils::CVar<int>*)rTrie.Find( sCVarName )->m_pNodeData;
-        TiXmlNode* pChild = pNode->FirstChild();
+        tinyxml2::XMLNode* pChild = pNode->FirstChild();
 
         if( pCVar != NULL && pChild != NULL ) {
             std::string sCVarValue;
