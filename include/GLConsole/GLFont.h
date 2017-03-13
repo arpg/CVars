@@ -8,7 +8,7 @@
 #ifndef __GL_FONT_H__
 #define __GL_FONT_H__
 
-#include <CVars/glplatform.h>
+#include <cvars/glplatform.h>
 
 #include <assert.h>
 #include <stdio.h>
