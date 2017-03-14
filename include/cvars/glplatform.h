@@ -71,4 +71,10 @@
     #endif
 #endif // HAVE_GLES
 
+#ifdef HAVE_FREEGLUT
+ #include <GL/gl.h>
+ #include <GL/glu.h>
+ #include <GL/glut.h>
+#endif
+
 #endif // CVARS_GLPLATFORM_H
