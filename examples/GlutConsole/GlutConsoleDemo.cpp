@@ -14,16 +14,16 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include <CVars/glplatform.h>
+#include <cvars/glplatform.h>
 
 //include this header for CVars and GLConsole
 #include <GLConsole/GLConsole.h>
 
 //A CVar version of std::vector
-#include <CVars/CVarVectorIO.h>
+#include <cvars/CVarVectorIO.h>
 
 //A CVar version of std::map
-#include <CVars/CVarMapIO.h>
+#include <cvars/CVarMapIO.h>
 
 
 // Single global instance so glut can get access
