@@ -37,9 +37,11 @@ namespace CVarUtils {
         std::istream &operator>>( std::istream &stream, std::map<K,D>& mMap ) {
 
         tinyxml2::XMLDocument doc;
-        stream >> doc;
+        std::string s;
+        stream >> s;
+        doc.Parse(s.c_str());
         //doc.Print( stdout );
-        tinyxml2::XMLNode* pCVarsNode = doc.FirstChild( "map" );
+        tinyxml2::XMLNode* pCVarsNode = doc.RootElement();
 
         if( pCVarsNode == NULL ) {
             std::cerr <<  "ERROR: Could not find a <map> node." << std::endl;
@@ -79,8 +81,7 @@ namespace CVarUtils {
                     std::cerr << "ERROR parsing key value in map (empty Key ?).\n" << std::endl;
                     return stream;
                 }           
-                std::stringstream iKeyString;
-                iKeyString << *pKeyChild;
+                std::stringstream iKeyString(pKeyChild->ToText()->Value());
                 iKeyString >> KKey;
                 //std::cout << "Key value: " << pChild->FirstChild()->Value() << std::endl;
             }
@@ -104,8 +105,7 @@ namespace CVarUtils {
                     std::cerr << "ERROR parsing Data value in map (empty Data ?).\n" << std::endl;
                     return stream;
                 }
-                std::stringstream iDataString;
-                iDataString << *pDataChild;
+                std::stringstream iDataString(pDataChild->ToText()->Value());
                 iDataString >> DData;         
                 //std::cout << "Data value: " << pChild->FirstChild()->Value() << std::endl;
             }
