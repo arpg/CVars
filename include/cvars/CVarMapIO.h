@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 namespace CVarUtils {
     // All types you wish to use with CVars must overload << and >>
@@ -36,17 +36,19 @@ namespace CVarUtils {
     template<class K, class D>
         std::istream &operator>>( std::istream &stream, std::map<K,D>& mMap ) {
 
-        TiXmlDocument doc;
-        stream >> doc;
+        tinyxml2::XMLDocument doc;
+        std::string s;
+        stream >> s;
+        doc.Parse(s.c_str());
         //doc.Print( stdout );
-        TiXmlNode* pCVarsNode = doc.FirstChild( "map" );
+        tinyxml2::XMLNode* pCVarsNode = doc.RootElement();
 
         if( pCVarsNode == NULL ) {
             std::cerr <<  "ERROR: Could not find a <map> node." << std::endl;
             return stream;
         }
 
-        for( TiXmlNode* pNode = pCVarsNode->FirstChild();
+        for( tinyxml2::XMLNode* pNode = pCVarsNode->FirstChild();
              pNode != NULL;
              pNode = pNode->NextSibling() ) {
 
@@ -61,7 +63,7 @@ namespace CVarUtils {
             D DData;
 
             ////////////////////////////////////////////////////////
-            TiXmlNode* pChild = pNode->FirstChild();
+            tinyxml2::XMLNode* pChild = pNode->FirstChild();
             ////////////////////////////////////////////////////////
             if( pChild == NULL ) {
                 std::cerr << "ERROR parsing map, could not find first child (Key) of Object." << std::endl;
@@ -73,14 +75,13 @@ namespace CVarUtils {
                     return stream;
                 }
 
-                TiXmlNode* pKeyChild = pChild->FirstChild();
+                tinyxml2::XMLNode* pKeyChild = pChild->FirstChild();
 
                 if( pKeyChild == NULL ) {
                     std::cerr << "ERROR parsing key value in map (empty Key ?).\n" << std::endl;
                     return stream;
                 }           
-                std::stringstream iKeyString;
-                iKeyString << *pKeyChild;
+                std::stringstream iKeyString(pKeyChild->ToText()->Value());
                 iKeyString >> KKey;
                 //std::cout << "Key value: " << pChild->FirstChild()->Value() << std::endl;
             }
@@ -98,14 +99,13 @@ namespace CVarUtils {
                     return stream;
                 }
 
-                TiXmlNode* pDataChild = pChild->FirstChild();
+                tinyxml2::XMLNode* pDataChild = pChild->FirstChild();
 
                 if( pDataChild == NULL ) {
                     std::cerr << "ERROR parsing Data value in map (empty Data ?).\n" << std::endl;
                     return stream;
                 }
-                std::stringstream iDataString;
-                iDataString << *pDataChild;
+                std::stringstream iDataString(pDataChild->ToText()->Value());
                 iDataString >> DData;         
                 //std::cout << "Data value: " << pChild->FirstChild()->Value() << std::endl;
             }

@@ -16,8 +16,10 @@ include( CheckCXXSourceRuns )
 
 # Properly source GL headers.
 find_package(OpenGL QUIET)
+if(OpenGL_FOUND)
 list(APPEND USER_INC  "${OPENGL_INCLUDE_DIR}" )
 list(APPEND LINK_LIBS "${OPENGL_LIBRARIES}" )
+endif(OpenGL_FOUND)
 
 find_package(GLEW QUIET)
 if(GLEW_FOUND)
@@ -29,9 +31,11 @@ endif()
 find_package(FREEGLUT QUIET)
 find_package(GLUT QUIET)
 
-find_package(TinyXML REQUIRED)
-list(APPEND USER_INC  ${TINYXML_INCLUDE_DIRS} )
-list(APPEND LINK_LIBS ${TINYXML_LIBRARIES} )
+find_package(TinyXML2 REQUIRED)
+list(APPEND USER_INC  ${TinyXML2_INCLUDE_DIRS} )
+list(APPEND LINK_LIBS ${TinyXML2_LIBRARIES} )
+
+message(WARNING ${LINK_LIBS})
 
 
 
