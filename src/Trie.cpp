@@ -344,9 +344,11 @@ std::ostream &operator<<( std::ostream &stream, Trie &rTrie )
 static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
 {
     tinyxml2::XMLDocument doc;
-    stream >> doc;
+    std::string s;
+    stream >> s;
+    doc.Parse(s.c_str());
 
-    tinyxml2::XMLNode* pCVarsNode = doc.FirstChild( "cvars" );
+    tinyxml2::XMLNode* pCVarsNode = doc.RootElement();
 
     if( pCVarsNode == NULL ) {
         cerr <<  "ERROR: Could not find <cvars> node." << endl;
@@ -376,8 +378,7 @@ static std::istream &XMLToTrie( std::istream &stream, Trie &rTrie )
         tinyxml2::XMLNode* pChild = pNode->FirstChild();
 
         if( pCVar != NULL && pChild != NULL ) {
-            std::string sCVarValue;
-            sCVarValue << *pChild;
+            std::string sCVarValue(pChild->ToText()->Value());
             pCVar->SetValueFromString( sCVarValue );
 
             if( rTrie.IsVerbose() ) {
