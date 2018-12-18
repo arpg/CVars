@@ -35,9 +35,6 @@ find_package(TinyXML2 REQUIRED)
 list(APPEND USER_INC  ${TinyXML2_INCLUDE_DIRS} )
 list(APPEND LINK_LIBS ${TinyXML2_LIBRARIES} )
 
-message(WARNING ${LINK_LIBS})
-
-
 
 # Custom check for Modified OSX GLUT.
 if(_OSX_)
